@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+src/Notes.txt
+src/Scrapers/normal_p.js
+src/Scrapers/Stealth_scraper.js
