@@ -25,3 +25,6 @@ dist-ssr
 src/Notes.txt
 src/Scrapers/normal_p.js
 src/Scrapers/Stealth_scraper.js
+src/Scrapers/Internshala_Scrape.js
+src/Scrapers/LinkedIN_Fetcher.js
+*.json
