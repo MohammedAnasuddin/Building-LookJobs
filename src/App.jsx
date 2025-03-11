@@ -1,35 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import JobForm from "./Job_Form";
+import  "./App.css"
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [showForm, setShowForm] = useState(false);
+
+  const handleFormSubmit = (data) => {
+    console.log("Submitted Data:", data);
+    setShowForm(false);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div>
+      <div className="container">
+      <h1>LooKJObs Backend Prototype</h1>
+      <h1>Batch-12 CSE-B</h1>
+      <button onClick={() => setShowForm(true)}>Looking for a JOb</button>
+      {showForm && <JobForm onSubmit={handleFormSubmit} onClose={() => setShowForm(false)} />}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;

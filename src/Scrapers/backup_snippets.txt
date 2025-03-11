@@ -1,0 +1,26 @@
+Inddeed by pass
+
+ const h1Text = await page.$eval("h1", (element) => element.innerText);
+ console.log("Page H1 Text:", h1Text);
+
+ if (h1Text.includes("Additional Verification Required")) {
+   console.log("Cloudflare verification detected!");
+
+   // Access the shadow DOM and click the checkbox
+   console.log("Waiting for the checkbox");
+   
+
+
+   await page.waitForSelector("div.main-wrapper>>>input[type='checkbox'",{visible: true, timeout: 50000})
+   console.log("checkbox apperead");
+   page.click("body>>>input[type='checkbox'")
+   console.log("Checkbox clicked successfully inside Shadow DOM.");
+
+  
+
+   // Wait for the page to reload after verification
+   await page.waitForNavigation({ waitUntil: "networkidle2" });
+ }
+
+ // Proceed with scraping or any further actions
+ console.log("Verification bypassed, proceeding...");

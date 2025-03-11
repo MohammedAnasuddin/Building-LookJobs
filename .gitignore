@@ -28,3 +28,6 @@ src/Scrapers/Stealth_scraper.js
 src/Scrapers/Internshala_Scrape.js
 src/Scrapers/LinkedIN_Fetcher.js
 *.json
+/Scraper/user_data
+/Scrapers/user_data
+/user_data
