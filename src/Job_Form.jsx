@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "./JobForm.css"; // Import the CSS file
+import "./JobForm.css";
 
-const JobForm = ({ onSubmit, onClose }) => {
+const JobForm = ({ onClose }) => {
   const [formData, setFormData] = useState({
     job_title: "",
     location: "",
@@ -9,6 +9,9 @@ const JobForm = ({ onSubmit, onClose }) => {
     willIntern: false,
     isFresher: false,
   });
+
+  const [loading, setLoading] = useState(false); // State to track API request
+  const [message, setMessage] = useState(""); // State for success/error messages
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -18,19 +21,42 @@ const JobForm = ({ onSubmit, onClose }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.job_title || !formData.location) {
       alert("Job Title and Location are mandatory.");
       return;
     }
-    onSubmit(formData);
+
+    setLoading(true); // Show loading state
+    setMessage("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/add-job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage(`✅ ${data.message} (Job ID: ${data.jobId})`);
+        setFormData({ job_title: "", location: "", canRemote: false, willIntern: false, isFresher: false });
+      } else {
+        setMessage(`❌ Error: ${data.message}`);
+      }
+    } catch (error) {
+      setMessage("❌ Network error. Please try again.");
+    } finally {
+      setLoading(false); // Hide loading state
+    }
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-container">
-        <h2>JOb Requirements</h2>
+        <h2>Job Requirements</h2>
         <form onSubmit={handleSubmit}>
           <label>
             Job Title: <span className="required">*</span>
@@ -52,10 +78,11 @@ const JobForm = ({ onSubmit, onClose }) => {
             </label>
           </div>
           <div className="button-group">
-            <button type="submit">Submit</button>
+            <button type="submit" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
             <button type="button" onClick={onClose} className="close-button">Close</button>
           </div>
         </form>
+        {message && <p className="message">{message}</p>}
       </div>
     </div>
   );
