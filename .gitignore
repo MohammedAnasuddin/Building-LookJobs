@@ -32,3 +32,5 @@ src/Scrapers/LinkedIN_Fetcher.js
 /Scrapers/user_data
 /user_data
 /src/Scrapers/scraper_user
+/scraper_user
+/src/backend/Scrapers/scraper_user
