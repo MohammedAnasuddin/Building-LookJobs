@@ -10,7 +10,7 @@ export const addNewJob = async (userId, jobData) => {
 
         // 1️⃣ Insert job requirements
         const jobQuery = `
-            INSERT INTO job_requirements (job_id, job_title, location, is_remote, will_intern, is_fresher)
+            INSERT INTO job_requirements (job_id, job_title, location, can_remote, is_fresher, will_intern)
             VALUES ($1, $2, $3, $4, $5, $6)
         `;
         await pool.query(jobQuery, [
@@ -24,10 +24,10 @@ export const addNewJob = async (userId, jobData) => {
 
         // 2️⃣ Add job_id to user's job list
         const userQuery = `
-            UPDATE users 
-            SET jid_array = array_append(jid_array, $1) 
-            WHERE user_id = $2
-        `;
+        UPDATE users
+        SET jid_array = ARRAY_APPEND(jid_array, $1)
+        WHERE user_id = $2
+      `;
         await pool.query(userQuery, [jobId, userId]);
 
         // 3️⃣ Create an empty job_updates entry
@@ -36,7 +36,7 @@ export const addNewJob = async (userId, jobData) => {
 
         await pool.query('COMMIT'); // Commit transaction
 
-        console.log("✅ Job added successfully with job_id:", jobId);
+        console.log("✅Job added successfully with job_id:",jobId);
         return { success: true, jobId };
     } catch (error) {
         await pool.query('ROLLBACK'); // Rollback transaction on failure
