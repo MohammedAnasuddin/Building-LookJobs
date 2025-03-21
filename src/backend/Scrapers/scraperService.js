@@ -3,6 +3,7 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 puppeteer.use(StealthPlugin());
 import moment from "moment";
 import pool from "../Database/db_setup.js"; 
+import linkedInScraper from './LinkedIn_Scraper.js'
 
 const scrapeJobs = async (job_id) => {
   try {
@@ -20,9 +21,10 @@ const scrapeJobs = async (job_id) => {
     console.log("📄 Job Requirements Retrieved:", jobRequirements);
 
     // 2️⃣ Launch Puppeteer with Pre-Saved User Data
+    const USER_DATA_DIR = "user";
     const browser = await puppeteer.launch({
       headless: false, // Set to true for production (false for debugging)
-      userDataDir: "./scraper_user", // Pre-saved user directory
+      userDataDir: USER_DATA_DIR, // Pre-saved user directory
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -34,28 +36,37 @@ const scrapeJobs = async (job_id) => {
     console.log("🌍 Puppeteer browser started with user data...");
 
     // 3️⃣ Pass requirements to scraper functions
-    const jobResults = await scrapeWithRequirements(browser, jobRequirements);
+    const allJobResults = []; // ✅ Array to store results from all scrapers
 
+    const linkedInResults = await linkedInScraper(browser, jobRequirements);
+    allJobResults.push(...linkedInResults); // ✅ Add LinkedIn results
+    
+    // const indeedResults = await indeedScraper(browser, jobRequirements);
+    // allJobResults.push(...indeedResults); // ✅ Add Indeed results
+    
+   
+
+
+    const timestamp = moment().format("DD-MMM-YYYY HH:mm:ss");
     // 4️⃣ Close Puppeteer
     await browser.close();
     console.log("✅ Puppeteer browser closed...");
 
     // 5️⃣ Create Daily Update Object with timestamp
-    const timestamp = moment().format("DD-MMM-YYYY HH:mm:ss");
     const dailyUpdate = {
       date: timestamp,
-      jobs: jobResults, // Store the scraped job data
+      jobs: allJobResults, // ✅ Store all jobs from all scrapers
     };
-
+    
     console.log("📌 Daily Update Object:", dailyUpdate);
-
-    // 6️⃣ Insert into job_updates
+    
+    // ✅ Insert into `job_updates` table
     const updateQuery = `
       UPDATE job_updates
       SET updates = array_append(updates, $1::jsonb)
       WHERE job_id = $2
     `;
-
+    
     await pool.query(updateQuery, [JSON.stringify(dailyUpdate), job_id]);
 
     console.log("✅ Job scraping results saved successfully for:", job_id);
@@ -64,21 +75,6 @@ const scrapeJobs = async (job_id) => {
     console.error("❌ Error in scrapeJobs:", error);
     return { success: false, error: error.message };
   }
-};
-
-// // 🚀 Mock Scraper Function (Replace with actual scraping logic)
-const scrapeWithRequirements = async (browser, jobRequirements) => {
-//   const page = await browser.newPage();
-//   await page.goto("https://example.com"); // Modify with actual job site
-//   console.log("🌐 Navigating to job site...");
-
-  // Simulate scraping process
-  await new Promise((r) => setTimeout(r, 2000)); // Fake delay for scraping
-
-  return [
-    { title: "Software Engineer", location: jobRequirements.location, company: "Google" },
-    { title: "Frontend Developer", location: jobRequirements.location, company: "Microsoft" },
-  ];
 };
 
 export default scrapeJobs;
