@@ -1,8 +1,11 @@
 import { Button, Group, Box } from '@mantine/core';
 import { MantineLogo } from '@mantinex/mantine-logo';
+import { useNavigate } from 'react-router-dom';
 import classes from './HeaderMegaMenu.module.css';
 
 export default function HeaderMegaMenu() {
+  const navigate = useNavigate(); // Enables navigation
+
   return (
     <Box pb={20}>
       <header className={classes.header}>
@@ -12,8 +15,12 @@ export default function HeaderMegaMenu() {
 
           {/* Login & Sign Up Buttons */}
           <Group>
-            <Button variant="default">Log in</Button>
-            <Button>Sign up</Button>
+            <Button variant="default" onClick={() => navigate('/login')}>
+              Log in
+            </Button>
+            <Button onClick={() => navigate('/register')}>
+              Sign up
+            </Button>
           </Group>
         </Group>
       </header>
