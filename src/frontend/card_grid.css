@@ -1,0 +1,94 @@
+/* Import Poppins Font */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+* {
+  font-family: "Poppins", sans-serif;
+  box-sizing: border-box;
+  margin: 15px;
+  padding: 4px;
+}
+
+/* Main Container */
+.job-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-items: left;
+  min-height: 100vh;
+  text-align: right;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+/* Job Title */
+.job-title {
+    width: 95%;
+    font-size: 64px;
+    font-weight: 600;
+    margin: 15px;
+    margin-bottom: 20px;
+    text-align: left;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 8px;
+    display: block;
+}
+
+/* Location Subtitle */
+.job-location {
+    width: 95%;
+    font-size: 48px;
+    font-weight: 600;
+    margin: 20px;
+    text-align: left;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 8px;
+    display: block;
+}
+
+/* Job Cards */
+.job-card {
+  padding: 20px;
+  text-align: center;
+  border: 1px solid black; /* Thin Black Border */
+  border-radius: 8px;
+  background: white;
+  transition: transform 0.2s;
+}
+
+.job-card:hover {
+  transform: scale(1.05);
+}
+
+.job-card-title {
+  font-size: 24px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.job-card-location,
+.job-card-provider {
+  font-size: 14px;
+  color: #555;
+  text-align: left;
+}
+
+/* Apply Button */
+.apply-button {
+  display: block;
+  background: black !important;
+  color: white !important;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.apply-button:hover {
+  background: #333 !important;
+}

@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { addNewJob } from "./Database/new_Job_Registration.js";
-import "./cron/jobScraperCron.js"; // Import and start the CRON job
+// import "./cron/jobScraperCron.js"; // Import and start the CRON job
  // Import function
 
 const app = express();
