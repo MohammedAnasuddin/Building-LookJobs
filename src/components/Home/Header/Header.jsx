@@ -15,11 +15,8 @@ export default function HeaderMegaMenu() {
 
           {/* Login & Sign Up Buttons */}
           <Group>
-            <Button variant="default" onClick={() => navigate('/login')}>
-              Log in
-            </Button>
-            <Button onClick={() => navigate('/register')}>
-              Sign up
+            <Button onClick={() => navigate('/login')}>
+              Login
             </Button>
           </Group>
         </Group>

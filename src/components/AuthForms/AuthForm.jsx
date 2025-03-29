@@ -1,223 +1,81 @@
-// import { useEffect } from 'react';
-// import {
-//   Anchor,
-//   Button,
-//   Checkbox,
-//   Divider,
-//   Group,
-//   Paper,
-//   PasswordInput,
-//   Stack,
-//   Text,
-//   TextInput,
-// } from '@mantine/core';
-// import { useForm } from '@mantine/form';
-// import { GoogleButton } from './GoogleButton';
-// import { useNavigate, useLocation } from 'react-router-dom';
+import { Button, Paper, Text, Container, Loader, Group } from "@mantine/core";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect } from "react";
 
-// export default function AuthenticationForm() {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   const type = location.pathname === '/register' ? 'register' : 'login';
+function AuthenticationForm() {
+  const { loginWithRedirect, logout, isAuthenticated, user, isLoading, error } = useAuth0();
 
-//   const form = useForm({
-//     initialValues: {
-//       email: '',
-//       name: '',
-//       password: '',
-//       terms: true,
-//     },
-//     validate: {
-//       email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
-//       password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
-//     },
-//   });
+  // Function to call backend API to store user data
+  const registerUser = async () => {
+    if (!user) return; // Avoid running if user is not defined
 
-//   return (
-//     <Paper radius="s" p="xl" withBorder>
-//       <Text size="lg" fw={500}>
-//         Welcome to LookJobs, {type === 'register' ? 'Sign up' : 'Log in'} with
-//       </Text>
+    try {
+      const response = await fetch("http://localhost:5000/api/register-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.sub, // ✅ Fix: Send 'user.sub' as 'userId'
+          name: user.name,
+          email: user.email,
+        }),
+      });
 
-//       <Group grow mb="md" mt="md">
-//         <GoogleButton radius="xl">Google</GoogleButton>
-//       </Group>
+      const data = await response.json();
+      if (!response.ok) {
+        console.error("Failed to register user:", data.message);
+      } else {
+        console.log("User registered successfully:", data.user);
+      }
+    } catch (error) {
+      console.error("Error registering user:", error);
+    }
+  };
 
-//       <Divider label="Or continue with email" labelPosition="center" my="lg" />
+  // Call registerUser() when the user logs in
+  useEffect(() => {
+    if (isAuthenticated) {
+      registerUser();
+    }
+  }, [isAuthenticated]); // Runs when `isAuthenticated` changes
 
-//       <form onSubmit={form.onSubmit(() => {})}>
-//         <Stack>
-//           {type === 'register' && (
-//             <TextInput
-//             label="Name"
-//             placeholder="Your name"
-//             value={form.values.name}
-//             onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
-//             radius="md"
-//             />
-//           )}
-
-//           <TextInput
-//             required
-//             label="Email"
-//             placeholder="hello@example.com"
-//             value={form.values.email}
-//             onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-//             error={form.errors.email && 'Invalid email'}
-//             radius="md"
-//             />
-
-//           <PasswordInput
-//             required
-//             label="Password"
-//             placeholder="Your password"
-//             value={form.values.password}
-//             onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-//             error={form.errors.password && 'Password should include at least 6 characters'}
-//             radius="md"
-//           />
-
-//           {type === 'register' && (
-//             <Checkbox
-//               label="I accept terms and conditions"
-//               checked={form.values.terms}
-//               onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
-//             />
-//           )}
-//         </Stack>
-
-//         <Group justify="space-between" mt="xl">
-//           <Anchor
-//             component="button"
-//             type="button"
-//             c="dimmed"
-//             onClick={() => navigate(type === 'register' ? '/login' : '/register')}
-//             size="xs"
-//           >
-//             {type === 'register'
-//               ? 'Already have an account? Login'
-//               : "Don't have an account? Register"}
-//           </Anchor>
-//           <Button type="submit" radius="xl">
-//             {type === 'register' ? 'Sign up' : 'Log in'}
-//           </Button>
-//         </Group>
-//       </form>
-//     </Paper>
-//   );
-// }
-
-
-
-
-//>---mantine Version----
-import {
-  Anchor,
-  Button,
-  Checkbox,
-  Divider,
-  Group,
-  Paper,
-  PasswordInput,
-  Stack,
-  Text,
-  TextInput,
-} from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { upperFirst, useToggle } from '@mantine/hooks';
-import { GoogleButton } from './GoogleButton';
-
-
-export default function AuthForm(props) {
-  const [type, toggle] = useToggle(['login', 'register']);
-  const form = useForm({
-    initialValues: {
-      email: '',
-      name: '',
-      password: '',
-      terms: true,
-    },
-
-    validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
-      password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
-    },
-  });
+  if (isLoading) {
+    return (
+      <Container size="xs" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Loader size="lg" />
+      </Container>
+    );
+  }
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      height: '100vh',
-    }}>
-
-    <Paper radius="xl" p="xl" withBorder {...props}>
-      <Text size="lg" fw={500}>
-        Welcome to <Text component="span" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }} inherit>
-                    LookJObs
-                  </Text>, {type} with
-      </Text>
-
-      <Group grow mb="md" mt="md">
-        <GoogleButton radius="xl">Google</GoogleButton>
-      </Group>
-
-      <Divider label="Or continue with email" labelPosition="center" my="lg" />
-
-      <form onSubmit={form.onSubmit(() => {})}>
-        <Stack>
-          {type === 'register' && (
-            <TextInput
-              label="Name"
-              placeholder="Your name"
-              value={form.values.name}
-              onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
-              radius="md"
-            />
-          )}
-
-          <TextInput
-            required
-            label="Email"
-            placeholder="hello@mantine.dev"
-            value={form.values.email}
-            onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-            error={form.errors.email && 'Invalid email'}
-            radius="md"
-          />
-
-          <PasswordInput
-            required
-            label="Password"
-            placeholder="Your password"
-            value={form.values.password}
-            onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-            error={form.errors.password && 'Password should include at least 6 characters'}
-            radius="md"
-          />
-
-          {type === 'register' && (
-            <Checkbox
-              label="I accept terms and conditions"
-              checked={form.values.terms}
-              onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
-            />
-          )}
-        </Stack>
-
-        <Group justify="space-between" mt="xl">
-          <Anchor component="button" type="button" c="dimmed" onClick={() => toggle()} size="xs">
-            {type === 'register'
-              ? 'Already have an account? Login'
-              : "Don't have an account? Register"}
-          </Anchor>
-          <Button type="submit" radius="xl">
-            {upperFirst(type)}
-          </Button>
-        </Group>
-      </form>
-    </Paper>
-    </div>
+    <Container size="xs" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Paper withBorder shadow="md" p={30} radius="md" style={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
+        {isAuthenticated ? (
+          <>
+            <Text size="lg" fw={500}>
+              Welcome, {user?.name}!
+            </Text>
+            <Text color="dimmed" size="sm" mt="xs">{user?.email}</Text>
+            <Group mt="md">
+              <Button fullWidth color="red" onClick={() => logout({ returnTo: window.location.origin })}>
+                Logout
+              </Button>
+            </Group>
+          </>
+        ) : (
+          <>
+            <Text size="lg" fw={500}>Welcome to LookJobs</Text>
+            <Text color="dimmed" size="sm" mt="xs">Please log in or register to continue</Text>
+            {error && <Text color="red" size="sm" mt="md">{error.message}</Text>}
+            <Button fullWidth mt="md" onClick={() => loginWithRedirect()}>
+              Login / Register
+            </Button>
+          </>
+        )}
+      </Paper>
+    </Container>
   );
 }
+
+export default AuthenticationForm;
