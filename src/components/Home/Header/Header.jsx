@@ -2,22 +2,24 @@ import { Button, Group, Box } from '@mantine/core';
 import { MantineLogo } from '@mantinex/mantine-logo';
 import { useNavigate } from 'react-router-dom';
 import classes from './HeaderMegaMenu.module.css';
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function HeaderMegaMenu() {
-  const navigate = useNavigate(); // Enables navigation
+  const navigate = useNavigate();
+   const { logout} = useAuth0(); // Enables navigation
 
   return (
     <Box pb={20}>
       <header className={classes.header}>
         <Group justify="space-between" h="100%">
           {/* Mantine Logo */}
-          <MantineLogo size={30} />
+      
 
           {/* Login & Sign Up Buttons */}
           <Group>
-            <Button onClick={() => navigate('/login')}>
-              Login
-            </Button>
+          <Button color="red" mt="md" onClick={() => logout({ returnTo: window.location.origin })}>
+        Logout
+      </Button>
           </Group>
         </Group>
       </header>

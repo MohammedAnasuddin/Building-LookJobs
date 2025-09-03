@@ -426,4 +426,5 @@ const linkedInScraper = async (browser, jobRequirements) => {
   return jobs;
 };
 
+
 export default linkedInScraper;

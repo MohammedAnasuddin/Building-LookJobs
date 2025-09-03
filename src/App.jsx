@@ -5,7 +5,9 @@ import { MantineProvider } from "@mantine/core";
 import HeaderMegaMenu from "./components/Home/Header/Header.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthenticationForm from "./components/AuthForms/AuthForm.jsx";
+import Dashboard from "./components/Dashboard/Dashboard.jsx"; // ✅ Import Dashboard
 import { Auth0Provider } from "@auth0/auth0-react";
+import card_grids from "./components/Dashboard/cards_grid.jsx";
 
 const auth0Domain = import.meta.env.VITE_AUTH0_DOMAIN;
 const auth0ClientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
@@ -17,13 +19,12 @@ function App() {
       domain={auth0Domain}
       clientId={auth0ClientId}
       authorizationParams={{
+        scope: "openid profile email",
         redirect_uri: auth0RedirectUri,
       }}
     >
       <MantineProvider>
         <Router>
-          <HeaderMegaMenu />
-          {/* Header remains visible on all pages */}
 
           <Routes>
             {/* Home Page */}
@@ -32,8 +33,12 @@ function App() {
             {/* Authentication Pages */}
             <Route path="/login" element={<AuthenticationForm />} />
             <Route path="/register" element={<AuthenticationForm />} />
+
+            {/* Dashboard Route */}
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </Router>
+        
       </MantineProvider>
     </Auth0Provider>
   );
