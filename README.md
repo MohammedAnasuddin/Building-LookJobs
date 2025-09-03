@@ -90,8 +90,8 @@ This project proposes a **Centralized and Intelligent Job Aggregation System** t
 
 The following diagram illustrates the overall workflow of the project:
 
-[LookJobs-Flow](Working-of-LookJobs.svg)  
-![LookJobs Flow](Working-of-LookJobs.svg)
+[LookJobs-Flow](Working%20of%20LookJobs.svg)  
+![LookJobs Flow](Working%20of%20LookJobs.svg)
 
 ---
 
