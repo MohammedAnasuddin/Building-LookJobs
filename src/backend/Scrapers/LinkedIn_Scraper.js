@@ -439,6 +439,7 @@ const linkedInScraper = async (browser, jobRequirements) => {
         job_id: card.getAttribute("data-job-id") || "N/A",
         OpportunityID: `${formattedDate}-LNKD-${index}`,
         added_on: new Date().toISOString().split("T")[0],
+        source: "LinkedIN",
         job_title: spans[0]?.textContent?.trim() || "N/A",
         job_provider: spans[2]?.textContent?.trim() || "N/A",
         job_location: spans[3]?.textContent?.trim() || "N/A",

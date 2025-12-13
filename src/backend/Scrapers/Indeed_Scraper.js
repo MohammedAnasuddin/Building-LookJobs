@@ -46,6 +46,7 @@ const indeedScraper = async (browser, jobRequirements) => {
         job_title: title,
         job_provider: company,
         job_location: location,
+        source: "Indeed",
         job_URL: jobURL,
         Remote: isRemote,
         Internship: title.toLowerCase().includes("intern"),

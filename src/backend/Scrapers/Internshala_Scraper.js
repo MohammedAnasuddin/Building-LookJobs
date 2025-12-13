@@ -48,6 +48,7 @@ const internshalaScraper = async (browser, jobRequirements) => {
         job_title: jobTitle,
         job_provider: company,
         job_location: location,
+        source:"Internshala",
         job_URL: jobURL,
         Remote: isRemote,
         Internship: jobTitle.toLowerCase().includes("internship"),

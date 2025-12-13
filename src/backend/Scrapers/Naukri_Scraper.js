@@ -49,6 +49,7 @@ const naukriScraper = async (browser, jobRequirements) => {
         OpportunityID: `${formattedDate}-NKRI-${index}`,
         added_on: new Date().toISOString().split("T")[0],
         job_title: jobTitle,
+        source:"Naukri",
         job_provider: company,
         job_location: location,
         job_URL: jobURL,
