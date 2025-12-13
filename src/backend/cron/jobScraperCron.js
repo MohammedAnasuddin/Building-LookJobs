@@ -1,47 +1,31 @@
 import cron from "node-cron";
-import pool  from "../Database/db_setup.js"; // PostgreSQL connection
-import scrapeJobs from "../Scrapers/scraperService.js"; // Scraper function
+import pool from "../Database/db_setup.js";
+import scrapeJobs from "../Scrapers/scraperService.js";
 
-const CRON_SCHEDULE = "*/5 * * * * *"; // Runs every 5 minutes
+const CRON_SCHEDULE = process.env.JOB_SCRAPE_CRON || "0 */1 * * *";
 
-// **Main function: Scrape jobs for user_id = 0**
-const scrapeJobsForUser = async () => {
-  const user_id = 0; // 🔥 Hardcoded User ID
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-  console.log(`🚀 Starting job scraping for user: ${user_id}`);
+export async function runScrapeCycle(source = "CRON") {
+  console.log(
+    `🚀 ${source}: Job scraping started at`,
+    new Date().toISOString()
+  );
 
-  try {
-    // **Step 1: Fetch JID Array for user 0**
-    const { rows } = await pool.query(
-      'SELECT jid_array FROM users WHERE user_id = $1',
-      [user_id]
-    );
-    const jidArray = rows[0]?.jid_array || [];  // Default to an empty array if null
-    
-    console.log("Fetched JID Array:", jidArray);
+  const { rows } = await pool.query(`
+    SELECT job_id FROM job_requirements
+  `);
 
-    // **Step 2: Call scrapingServices for each JID**
-    console.log("📌 Total Jobs to Scrape:", jidArray.length);
-    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    for (const job_id of jidArray) {
-      if (!job_id) {
-        console.error("⚠️ Skipping invalid job_id:", job_id);
-        continue; // Skip this iteration if job_id is invalid
-      }
-    
-      console.log(`🔍 Calling scrapingServices for JID: ${job_id}`);
-      await scrapeJobs(job_id); // Wait for this job to complete before starting the next one
-      console.log(`✅ Finished scraping for JID: ${job_id}`);
-      delay(5000)
-    }
-    
-    console.log("🎯 All jobs scraped successfully!");
-  } catch (error) {
-    console.error("❌ Error in scrapeJobsForUser:", error);
-  }
-};
+  // for (const { job_id } of rows) {
+  //   console.log(`🔍 Scraping job_id: ${job_id}`);
+  //   await scrapeJobs(job_id);
+  //   await delay(3000);
+  // }
 
-// **CRON JOB (Runs every 30 sec)**
-cron.schedule(CRON_SCHEDULE, scrapeJobsForUser);
+  console.log(`✅ ${source}: Job scraping completed`);
+}
 
-console.log("🕒 CRON Job Scheduled: Every 5 minutes");
+// Real cron
+cron.schedule(CRON_SCHEDULE, () => runScrapeCycle("CRON"));
+
+console.log("🕒 Cron scheduled:", CRON_SCHEDULE);

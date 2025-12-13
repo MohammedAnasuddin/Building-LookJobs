@@ -1,18 +1,26 @@
-import { getJobUpdatesForJob } from "./Database/get_updates.js";// Import the new function
+import { getJobUpdatesForJob } from "./Database/get_updates.js"; // Import the new function
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { addNewJob } from "./Database/new_Job_Registration.js";
 import addUser from "./Database/new_user.js";
 import pool from "./Database/db_setup.js";
-// import "./cron/jobScraperCron.js"; // Import and start the CRON job
-// Import function
+import { runScrapeCycle } from "./cron/jobScraperCron.js";
 
 const app = express();
 const PORT = 5000;
 
 app.use(cors()); // Enable CORS
 app.use(bodyParser.json()); // Parse JSON requests
+
+app.post("/api/demo/run-scraper", async (req, res) => {
+  try {
+    // await runScrapeCycle("MANUAL DEMO");
+    res.json({ message: "Scraper run completed" });
+  } catch (err) {
+    res.status(500).json({ message: "Scraper failed" });
+  }
+});
 
 app.get("/api/user/profile/:userId", async (req, res) => {
   const { userId } = req.params;
