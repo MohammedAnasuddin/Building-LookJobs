@@ -2,53 +2,68 @@ import pool from "./db_setup.js";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 import scrapeJobs from "../Scrapers/scraperService.js";
-import { getUserIdFromAuth0 } from "../../Auth/authHelper.js";
-import { useAuth0 } from "@auth0/auth0-react";
 
-export const addNewJob = async (jobData) => {
+export const addNewJob = async (jobData, userId) => {
   const formattedDateTime = moment().format("YYYY-MM-DD HH:mm:ss");
   const jobId = `job_${uuidv4()}`;
 
-  console.log("📌 Adding job at:", formattedDateTime);
+  if (!userId) {
+    return { success: false, error: "User ID missing" };
+  }
 
   try {
-    const userId = "0";
-    console.log("Working on: ", userId);
-    console.log(`✅ Authenticated user: ${userId}`);
-
     await pool.query("BEGIN");
 
-    const jobQuery = `
-            INSERT INTO job_requirements (job_id, job_added_date, job_title, location, can_remote, is_fresher, will_intern)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-        `;
-    await pool.query(jobQuery, [
-      jobId,
-      formattedDateTime,
-      jobData.job_title,
-      jobData.location,
-      jobData.canRemote,
-      jobData.isFresher,
-      jobData.willIntern,
-    ]);
+    /* 1️⃣ ENSURE USER EXISTS (IDEMPOTENT) */
+    await pool.query(
+      `
+      INSERT INTO users (user_id, jid_array)
+      VALUES ($1, ARRAY[]::text[])
+      ON CONFLICT (user_id) DO NOTHING
+      `,
+      [userId]
+    );
 
-    const userQuery = `
-            UPDATE users
-            SET jid_array = ARRAY_APPEND(jid_array, $1)
-            WHERE user_id = $2
-        `;
-    const userUpdateResult = await pool.query(userQuery, [jobId, userId]);
+    /* 2️⃣ INSERT JOB */
+    await pool.query(
+      `
+  INSERT INTO job_requirements
+  (
+    job_id,
+    job_title,
+    location,
+    can_remote,
+    is_fresher,
+    will_intern,
+    job_added_date
+  )
+  VALUES ($1, $2, $3, $4, $5, $6, NOW())
+  `,
+      [
+        jobId,
+        jobData.job_title,
+        jobData.location,
+        jobData.canRemote ?? false,
+        jobData.isFresher ?? false,
+        jobData.willIntern ?? false,
+      ]
+    );
 
-    if (userUpdateResult.rowCount === 0) {
-      throw new Error("❌ User does not exist in the database.");
-    }
+    /* 3️⃣ ATTACH JOB TO USER */
+    await pool.query(
+      `
+      UPDATE users
+      SET jid_array = ARRAY_APPEND(jid_array, $1)
+      WHERE user_id = $2
+      `,
+      [jobId, userId]
+    );
 
     await pool.query("COMMIT");
 
-    console.log(
-      `✅ Job added successfully with job_id: ${jobId} for user: ${userId}`
-    );
+    console.log(`✅ Job ${jobId} added for user ${userId}`);
 
+    // fire & forget
     scrapeJobs(jobId).catch((err) => console.error("❌ Scraper failed:", err));
 
     return { success: true, jobId };
