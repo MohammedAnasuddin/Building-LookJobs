@@ -19,8 +19,8 @@
 
 // // // Fetch job updates for the jid_array
 // // const jobsQuery = `
-// //   SELECT job_id, title, company, location, source, uploaded_date 
-// //   FROM job_updates 
+// //   SELECT job_id, title, company, location, source, uploaded_date
+// //   FROM job_updates
 // //   WHERE job_id = ANY($1)
 // //   ORDER BY uploaded_date DESC
 // // `;
@@ -30,7 +30,7 @@
 
 // const mockJobs = [
 //   ];
-  
+
 //   export default function Card_grids() {
 //     const [search, setSearch] = useState("");
 //     const { user } = useAuth0();
@@ -65,8 +65,6 @@
 //   );
 // }
 
-
-
 import React from "react";
 import jobsUpdates from "./jobs_updates.json"; // Assuming the JSON file is in the same directory
 import { Container, Grid, Card, Text, Button } from "@mantine/core"; // Assuming you are using Mantine
@@ -76,13 +74,25 @@ function CardsGallery() {
     <Container size="lg" className="p-6">
       <Grid gutter="lg">
         {jobsUpdates.map((job) => (
-          <Grid.Col key={job.job_id} span={4}>  {/* span=4 ensures 3 cards per row */}
-            <Card shadow="sm" padding="lg" radius="md" withBorder style={{ height: "300px"  }}> {/* Fixed height */}
+          <Grid.Col key={job.job_id} span={4}>
+            {" "}
+            {/* span=4 ensures 3 cards per row */}
+            <Card
+              shadow="sm"
+              padding="lg"
+              radius="md"
+              withBorder
+              style={{ height: "300px" }}
+            >
+              {" "}
+              {/* Fixed height */}
               <Text weight={600}>{job.job_title}</Text>
               <Text size="sm" color="dimmed">
                 {job.job_provider}
               </Text>
-              <Button fullWidth mt="md">Apply</Button>
+              <Button fullWidth mt="md">
+                Apply
+              </Button>
             </Card>
           </Grid.Col>
         ))}
@@ -92,7 +102,3 @@ function CardsGallery() {
 }
 
 export default CardsGallery;
-
-
-
-

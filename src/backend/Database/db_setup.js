@@ -12,7 +12,15 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-pool.connect()
+const check = await pool.query(`
+  SELECT table_schema, table_name
+  FROM information_schema.tables
+  WHERE table_name = 'job_scrape_results'
+`);
+console.log("✅ Node sees tables:", check.rows);
+
+pool
+  .connect()
   .then(() => console.log("✅ PostgreSQL Connected Successfully"))
   .catch((err) => console.error("❌ Database Connection Failed:", err.stack));
 

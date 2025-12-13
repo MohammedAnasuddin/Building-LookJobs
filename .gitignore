@@ -35,3 +35,10 @@ src/Scrapers/LinkedIN_Fetcher.js
 /scraper_user
 /src/backend/Scrapers/scraper_user
 /user
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.github/instructions/snyk_rules.instructions.md
+
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md

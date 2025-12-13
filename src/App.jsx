@@ -19,12 +19,12 @@ function App() {
       domain={auth0Domain}
       clientId={auth0ClientId}
       authorizationParams={{
-        scope: "openid profile email",
         redirect_uri: auth0RedirectUri,
       }}
     >
       <MantineProvider>
         <Router>
+    
 
           <Routes>
             {/* Home Page */}
@@ -38,7 +38,6 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </Router>
-        
       </MantineProvider>
     </Auth0Provider>
   );

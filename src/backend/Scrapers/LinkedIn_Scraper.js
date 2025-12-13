@@ -28,17 +28,17 @@
 //       console.log("🔑 Logging into LinkedIn...");
 //       await page.type("#username", USERNAME, { delay: 150 });
 //       await page.type("#password", PASSWORD, { delay: 150 });
-  
+
 //       await Promise.all([
 //           page.click("button[type=submit]"),
 //           page.waitForNavigation({ waitUntil: "domcontentloaded" }),
 //       ]);
-  
+
 //       console.log("✅ Successfully Logged In!");
 //   } else {
 //       console.log("✅ Already Logged In! Skipping login...");
 //   }
-  
+
 //   // **Ensure it’s on Jobs Page, not Feed**
 //   if (page.url().includes("/feed/")) {
 //       console.log("🔄 Redirected to feed. Going to Jobs Page...");
@@ -60,7 +60,7 @@
 //     console.log("Fond role search")
 //     await jobInput.type("Full Stack Developer", { delay: 100 });
 //   }
-  
+
 //   if (locationInput) {
 //     await locationInput.click({ clickCount: 3 });
 //     console.log("Fond role location")
@@ -71,7 +71,6 @@
 //   await page.waitForSelector(".job-card-container", { waitUntil: "domcontentloaded" });
 
 //   console.log("✅ Landed on LinkedIn Jobs Page");
-
 
 //   // **Apply Filters**
 //   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -88,10 +87,7 @@
 //   await searchFilters[1].$("div[class^=reusable-search-filters-buttons] button:nth-of-type(2)").then(btn => btn.click());
 //   await delay(500);
 
-  
-
 //   //** Applying Experience */
-
 
 //   // **Apply Experience Filters**
 // // if (jobRequirements.is_fresher || jobRequirements.will_Intern) {
@@ -206,7 +202,6 @@
 //     });
 // });
 
-
 //   // **Save JSON Data**
 //   fs.writeFileSync("LinkedIn_jobs.json", JSON.stringify(jobs, null, 2));
 //   console.log("LinkedIn_jobs.json", JSON.stringify(jobs, null, 2));
@@ -219,7 +214,7 @@
 //   return jobs;
 // };
 
-// let dummy_Data= 
+// let dummy_Data=
 //   {
 //     job_id: 'job_519b5068-ad84-48ca-aab2-a5c567eef7f1',
 //     job_title: 'Full Stack Developer',
@@ -229,20 +224,17 @@
 //    "will_intern": true,
 //     job_added_date: "2025-03-21T02:49:35.000Z"
 //   }
-  
 
 //   await linkedInScraper(dummy_Data)
-
 
 // export default linkedInScraper;
 // * ----------------------Version -2  ---------------------------------------------------*
 
+// import fs from "fs";
+// import puppeteer from "puppeteer-extra";
+// import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
-import fs from "fs";
-import puppeteer from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
-
-puppeteer.use(StealthPlugin());
+// puppeteer.use(StealthPlugin());
 
 const USERNAME = "lookjobs.project@gmail.com";
 const PASSWORD = "lookJObs@linkedIN";
@@ -250,12 +242,14 @@ const PASSWORD = "lookJObs@linkedIN";
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const linkedInScraper = async (browser, jobRequirements) => {
-
+  console.log("🚀 Launching LinkedIn Scraper...");
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(60000);
   page.setDefaultTimeout(60000);
 
-  await page.goto("https://www.linkedin.com/login", { waitUntil: "domcontentloaded" });
+  await page.goto("https://www.linkedin.com/login", {
+    waitUntil: "domcontentloaded",
+  });
   await delay(500);
 
   // **Check if already logged in**
@@ -279,7 +273,9 @@ const linkedInScraper = async (browser, jobRequirements) => {
   // **Ensure it’s on Jobs Page, not Feed**
   if (page.url().includes("/feed/")) {
     console.log("🔄 Redirected to feed. Going to Jobs Page...");
-    await page.goto("https://www.linkedin.com/jobs/", { waitUntil: "domcontentloaded" });
+    await page.goto("https://www.linkedin.com/jobs/", {
+      waitUntil: "domcontentloaded",
+    });
     await delay(500);
   } else {
     console.log("✅ Already on correct page!");
@@ -287,11 +283,17 @@ const linkedInScraper = async (browser, jobRequirements) => {
 
   // **Wait for search fields**
   console.log("🔍 Entering Job Search Criteria...");
-  await page.waitForSelector("input[id^='jobs-search-box-keyword-id-']", { visible: true });
-  await page.waitForSelector("input[id^='jobs-search-box-location-id-']", { visible: true });
+  await page.waitForSelector("input[id^='jobs-search-box-keyword-id-']", {
+    visible: true,
+  });
+  await page.waitForSelector("input[id^='jobs-search-box-location-id-']", {
+    visible: true,
+  });
 
   const jobInput = await page.$("input[id^='jobs-search-box-keyword-id-']");
-  const locationInput = await page.$("input[id^='jobs-search-box-location-id-']");
+  const locationInput = await page.$(
+    "input[id^='jobs-search-box-location-id-']"
+  );
 
   if (jobInput) {
     await jobInput.click({ clickCount: 3 });
@@ -309,7 +311,9 @@ const linkedInScraper = async (browser, jobRequirements) => {
 
   await delay(500);
   await jobInput.press("Enter");
-  await page.waitForSelector(".job-card-container", { waitUntil: "domcontentloaded" });
+  await page.waitForSelector(".job-card-container", {
+    waitUntil: "domcontentloaded",
+  });
 
   console.log("✅ Landed on LinkedIn Jobs Page");
   await delay(500);
@@ -323,26 +327,39 @@ const linkedInScraper = async (browser, jobRequirements) => {
   await searchFilters[1].click();
   await delay(500);
 
-  await page.waitForSelector("li.search-reusables__collection-values-item input");
-  const past24Hours = await page.$$("li.search-reusables__collection-values-item input");
+  await page.waitForSelector(
+    "li.search-reusables__collection-values-item input"
+  );
+  const past24Hours = await page.$$(
+    "li.search-reusables__collection-values-item input"
+  );
   await past24Hours[3].click(); // Select "Past 24 Hours"
   await delay(500);
 
-  await searchFilters[1].$("div[class^=reusable-search-filters-buttons] button:nth-of-type(2)").then(btn => btn.click());
+  await searchFilters[1]
+    .$("div[class^=reusable-search-filters-buttons] button:nth-of-type(2)")
+    .then((btn) => btn.click());
   await delay(500);
 
   // **Apply Experience Filters**
   if (jobRequirements.is_fresher || jobRequirements.will_intern) {
     console.log("🎓 Applying Fresher/Internship filter...");
 
-    await page.waitForSelector("li.search-reusables__primary-filter", { visible: true });
-    let updatedSearchFilters = await page.$$("li.search-reusables__primary-filter");
+    await page.waitForSelector("li.search-reusables__primary-filter", {
+      visible: true,
+    });
+    let updatedSearchFilters = await page.$$(
+      "li.search-reusables__primary-filter"
+    );
     await delay(500);
 
     await updatedSearchFilters[2].click();
     await delay(500);
 
-    await page.waitForSelector("ul[class*=search-reusables__collection-values-container]", { waitUntil: "domcontentloaded" });
+    await page.waitForSelector(
+      "ul[class*=search-reusables__collection-values-container]",
+      { waitUntil: "domcontentloaded" }
+    );
 
     if (jobRequirements.will_intern) {
       const internCheckbox = await page.$("input[id='experience-1']");
@@ -365,7 +382,9 @@ const linkedInScraper = async (browser, jobRequirements) => {
     }
 
     await delay(500);
-    await updatedSearchFilters[2].$("div[class^=reusable-search-filters-buttons] button:nth-of-type(2)").then(btn => btn.click());
+    await updatedSearchFilters[2]
+      .$("div[class^=reusable-search-filters-buttons] button:nth-of-type(2)")
+      .then((btn) => btn.click());
     await delay(500);
   }
 
@@ -373,58 +392,72 @@ const linkedInScraper = async (browser, jobRequirements) => {
   if (jobRequirements.can_remote) {
     console.log("🌍 Applying Remote filter...");
 
-    await page.waitForSelector("li.search-reusables__primary-filter", { visible: true });
+    await page.waitForSelector("li.search-reusables__primary-filter", {
+      visible: true,
+    });
 
     const remoteFilter = await page.$$("li.search-reusables__primary-filter");
     await remoteFilter[4].click();
     await delay(500);
 
-    await page.waitForSelector("ul[class*=search-reusables__collection-values-container]", { waitUntil: "domcontentloaded" });
+    await page.waitForSelector(
+      "ul[class*=search-reusables__collection-values-container]",
+      { waitUntil: "domcontentloaded" }
+    );
 
     await page.click("input[id='workplaceType-1']"); // On-site (mandatory)
     await delay(500);
     await page.click("input[id='workplaceType-2']");
     await delay(500);
 
-    await remoteFilter[4].$("div[class^=reusable-search-filters-buttons] button:nth-of-type(2)").then(btn => btn.click());
+    await remoteFilter[4]
+      .$("div[class^=reusable-search-filters-buttons] button:nth-of-type(2)")
+      .then((btn) => btn.click());
     await delay(500);
   }
 
   // **Wait for results**
-  await page.waitForSelector(".job-card-container", { waitUntil: "domcontentloaded" });
+  await page.waitForSelector(".job-card-container", {
+    waitUntil: "domcontentloaded",
+  });
   console.log("📋 Fetching job data...");
   await delay(500);
 
   // **Extract Job Data**
   const jobs = await page.evaluate(() => {
     const jobCards = document.querySelectorAll(".job-card-container");
-    return Array.from(jobCards).map((card) => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const year = today.getFullYear();
+    const formattedDate = `${day}-${month}-${year}`;
+
+    return Array.from(jobCards).map((card, index) => {
       const spans = Array.from(card.getElementsByTagName("span"));
 
       return {
         job_id: card.getAttribute("data-job-id") || "N/A",
-        OpportunityID: `OPP-${Math.floor(Math.random() * 100000)}`,
+        OpportunityID: `${formattedDate}-LNKD-${index}`,
         added_on: new Date().toISOString().split("T")[0],
         job_title: spans[0]?.textContent?.trim() || "N/A",
         job_provider: spans[2]?.textContent?.trim() || "N/A",
         job_location: spans[3]?.textContent?.trim() || "N/A",
         job_URL: card.querySelector("a")?.href || "N/A",
-        Remote: spans.some(span => span.textContent.includes("Remote")),
-        Internship: spans.some(span => span.textContent.includes("Internship")),
-        Fresher: spans.some(span => span.textContent.includes("Entry Level")),
-        isNew: true
+        Remote: spans.some((span) => span.textContent.includes("Remote")),
+        Internship: spans.some((span) =>
+          span.textContent.includes("Internship")
+        ),
+        Fresher: spans.some((span) => span.textContent.includes("Entry Level")),
+        isNew: true,
       };
     });
   });
 
-  fs.writeFileSync("LinkedIn_jobs.json", JSON.stringify(jobs, null, 2));
-  console.log("✅ Jobs data saved to LinkedIn_jobs.json");
-
+  await delay(2000);
   await page.close();
   console.log("🔒 Closed LinkedIn page");
 
   return jobs;
 };
-
 
 export default linkedInScraper;
