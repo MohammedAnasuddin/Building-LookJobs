@@ -100,7 +100,6 @@ export default function Dashboard() {
           <h1 className="text-2xl sm:text-3xl font-semibold">
             Welcome back, {user?.name}
           </h1>
-          
         </div>
 
         {/* First-time user */}
