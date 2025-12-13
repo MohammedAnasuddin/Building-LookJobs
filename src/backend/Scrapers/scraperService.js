@@ -31,7 +31,7 @@ const scrapeJobs = async (job_id) => {
 
     // 2️⃣ Launch Puppeteer
     const browser = await puppeteer.launch({
-      headless: false, // true in production
+      headless: true, // true in production
       userDataDir: "user",
       args: [
         "--no-sandbox",

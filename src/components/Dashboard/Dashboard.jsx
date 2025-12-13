@@ -46,10 +46,12 @@ export default function Dashboard() {
   }, [userId]);
 
   /* ----------------------------------
-     2️⃣ FETCH JOBS WHEN jobId EXISTS
+     2️⃣ FETCH + POLL JOBS WHEN jobId EXISTS
   -----------------------------------*/
   useEffect(() => {
     if (!jobId) return;
+
+    let intervalId;
 
     const fetchJobs = async () => {
       try {
@@ -60,18 +62,26 @@ export default function Dashboard() {
         const latestDate = dates.at(-1);
         const latestJobs = data.jobs_by_date?.[latestDate] || [];
 
-        setJobs(latestJobs);
-
         if (latestJobs.length > 0) {
-          setIsScraping(false);
+          setJobs(latestJobs);
+          setIsScraping(false); // ✅ stop loader
+          clearInterval(intervalId); // ✅ stop polling
         }
       } catch (err) {
         console.error("❌ Jobs fetch failed", err);
       }
     };
 
+    // First fetch
     fetchJobs();
-  }, [jobId]);
+
+    // Poll only while scraping
+    if (isScraping) {
+      intervalId = setInterval(fetchJobs, 5000);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [jobId, isScraping]);
 
   /* ----------------------------------
      LOADING STATE
@@ -118,7 +128,7 @@ export default function Dashboard() {
                 onSuccess={(newJobId) => {
                   setJobId(newJobId);
                   setHasRequestedJob(true);
-                  setIsScraping(true);
+                  setIsScraping(true); // ✅ start polling
                 }}
               />
             </div>

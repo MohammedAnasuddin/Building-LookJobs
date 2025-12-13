@@ -1,17 +1,7 @@
 import { useState } from "react";
-import { useDisclosure } from "@mantine/hooks";
-import {
-  Modal,
-  Button,
-  TextInput,
-  Checkbox,
-  Group,
-  Loader,
-  Text,
-} from "@mantine/core";
 
 function JobFormModal({ userId, onSuccess }) {
-  const [opened, { open, close }] = useDisclosure(false);
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -46,23 +36,20 @@ function JobFormModal({ userId, onSuccess }) {
       const res = await fetch("http://localhost:5000/api/add-job", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          userId,
-        }),
+        body: JSON.stringify({ ...formData, userId }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        setMessage("✅ Job request submitted");
-        onSuccess(data.jobId); // 🔥 auto-refresh dashboard
-        close();
+        setMessage("success");
+        onSuccess(data.jobId);
+        setOpen(false);
       } else {
-        setMessage("❌ Failed to submit job");
+        setMessage("error");
       }
-    } catch (err) {
-      setMessage("❌ Network error");
+    } catch {
+      setMessage("error");
     } finally {
       setLoading(false);
     }
@@ -70,68 +57,154 @@ function JobFormModal({ userId, onSuccess }) {
 
   return (
     <>
-      <Button
-        variant="gradient"
-        gradient={{ from: "blue", to: "cyan" }}
-        onClick={open}
-        mt="lg"
+      {/* Trigger Button */}
+      <button
+        onClick={() => setOpen(true)}
+        className="
+          rounded-xl bg-indigo-600
+          px-5 py-2.5
+          text-sm font-medium text-white
+          hover:bg-indigo-500
+          transition
+        "
       >
         Request Job Update
-      </Button>
+      </button>
 
-      <Modal opened={opened} onClose={close} title="Job Requirements" centered>
-        <form onSubmit={handleSubmit}>
-          <TextInput
-            label="Job Title"
-            name="job_title"
-            required
-            value={formData.job_title}
-            onChange={handleChange}
+      {/* Modal */}
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setOpen(false)}
           />
 
-          <TextInput
-            label="Location"
-            name="location"
-            required
-            mt="md"
-            value={formData.location}
-            onChange={handleChange}
-          />
+          {/* Modal Card */}
+          <div
+            className="
+            relative z-10 w-full max-w-md
+            rounded-2xl bg-slate-900
+            p-6 sm:p-8
+            shadow-xl
+            text-slate-100
+          "
+          >
+            {/* Header */}
+            <div className="mb-6 space-y-1">
+              <h2 className="text-lg font-semibold">Job Requirements</h2>
+              <p className="text-sm text-slate-400">
+                Tell us what roles you want us to track for you
+              </p>
+            </div>
 
-          <Group mt="md">
-            <Checkbox
-              label="Fresher"
-              name="isFresher"
-              checked={formData.isFresher}
-              onChange={handleChange}
-            />
-            <Checkbox
-              label="Remote"
-              name="canRemote"
-              checked={formData.canRemote}
-              onChange={handleChange}
-            />
-            <Checkbox
-              label="Internship"
-              name="willIntern"
-              checked={formData.willIntern}
-              onChange={handleChange}
-            />
-          </Group>
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Job title */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Job title
+                </label>
+                <input
+                  type="text"
+                  name="job_title"
+                  value={formData.job_title}
+                  onChange={handleChange}
+                  placeholder="e.g. Software Engineer"
+                  className="
+                    w-full rounded-lg
+                    bg-slate-800 border border-slate-700
+                    px-3 py-2
+                    text-sm
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500
+                  "
+                />
+              </div>
 
-          <Group mt="lg">
-            <Button type="submit" fullWidth disabled={loading}>
-              {loading ? <Loader size="sm" /> : "Submit"}
-            </Button>
-          </Group>
+              {/* Location */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  placeholder="e.g. Bangalore, Hyderabad, Chennai"
+                  className="
+                    w-full rounded-lg
+                    bg-slate-800 border border-slate-700
+                    px-3 py-2
+                    text-sm
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500
+                  "
+                />
+              </div>
 
-          {message && (
-            <Text mt="md" c={message.startsWith("✅") ? "green" : "red"}>
-              {message}
-            </Text>
-          )}
-        </form>
-      </Modal>
+              {/* Preferences */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <label className="flex items-center gap-2 text-sm text-slate-300">
+                  <input
+                    type="checkbox"
+                    name="isFresher"
+                    checked={formData.isFresher}
+                    onChange={handleChange}
+                    className="accent-indigo-500"
+                  />
+                  Fresher
+                </label>
+
+                <label className="flex items-center gap-2 text-sm text-slate-300">
+                  <input
+                    type="checkbox"
+                    name="canRemote"
+                    checked={formData.canRemote}
+                    onChange={handleChange}
+                    className="accent-indigo-500"
+                  />
+                  Remote
+                </label>
+
+                <label className="flex items-center gap-2 text-sm text-slate-300">
+                  <input
+                    type="checkbox"
+                    name="willIntern"
+                    checked={formData.willIntern}
+                    onChange={handleChange}
+                    className="accent-indigo-500"
+                  />
+                  Internship
+                </label>
+              </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="
+                  w-full rounded-xl
+                  bg-indigo-600
+                  py-2.5
+                  text-sm font-medium text-white
+                  hover:bg-indigo-500
+                  transition
+                  disabled:opacity-60
+                "
+              >
+                {loading ? "Submitting…" : "Submit request"}
+              </button>
+
+              {/* Message */}
+              {message === "error" && (
+                <p className="text-sm text-red-400 text-center">
+                  Failed to submit job request
+                </p>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 }
