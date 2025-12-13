@@ -1,6 +1,4 @@
-import { Container, Grid, Card, Text, Button, Divider } from "@mantine/core";
-
-// INLINE SOURCE DETECTOR (as discussed)
+// INLINE SOURCE DETECTOR (unchanged)
 function detectJobSource(job) {
   const text = `${job.OpportunityID || ""} ${job.job_id || ""} ${
     job.job_URL || ""
@@ -16,7 +14,6 @@ function detectJobSource(job) {
 }
 
 function CardsGrid({ jobs }) {
-  // 🔹 Group jobs by date
   const jobsByDate = jobs.reduce((acc, job) => {
     const date = job.added_on || "Unknown Date";
     acc[date] = acc[date] || [];
@@ -26,53 +23,107 @@ function CardsGrid({ jobs }) {
 
   const sortedDates = Object.keys(jobsByDate).sort().reverse();
 
+  function formatDate(dateString) {
+    if (!dateString) return "";
+
+    const [year, month, day] = dateString.split("-");
+    return `${day}-${month}-${year}`;
+  }
+
   return (
-    <Container size="lg" mt="xl">
+    <div className="space-y-14">
       {sortedDates.map((date) => (
-        <div key={date}>
-          {/* 🗓️ DATE HEADING */}
-          <Text size="xl" fw={700} mb="md">
-            {date} 
-          </Text>
-          <Text size="lg" fw={700} mb="md">
-            {jobs.length} Jobs
-          </Text>
+        <section key={date} className="space-y-6">
+          {/* Date header */}
+          <div className="mt-6 flex flex-wrap gap-4">
+            {/* Date pill */}
+            <div className="rounded-xl bg-slate-900 px-4 py-2">
+              <p className="text-xs text-slate-400">Date</p>
+              <p className="text-lg font-semibold text-slate-100">
+                {formatDate(date)}
+              </p>
+            </div>
 
-          <Grid gutter="lg">
+            {/* Opportunities pill */}
+            <div className="rounded-xl bg-slate-900 px-4 py-2">
+              <p className="text-xs text-slate-400">Opportunities</p>
+              <p className="text-lg font-semibold text-slate-100">
+                {jobsByDate[date].length}
+              </p>
+            </div>
+          </div>
+
+          {/* Cards grid */}
+          <div
+            className="
+            grid gap-6
+            grid-cols-1
+            sm:grid-cols-2
+            lg:grid-cols-3
+          "
+          >
             {jobsByDate[date].map((job, idx) => (
-              <Grid.Col span={4} key={idx}>
-                <Card shadow="sm" padding="lg" radius="md" withBorder>
-                  <Text fw={600}>{job.job_title}</Text>
+              <article
+                key={idx}
+                className="
+                  relative flex flex-col
+                  rounded-2xl
+                  border border-slate-800
+                  bg-slate-900
+                  p-6
+                  shadow-sm
+                  transition
+                  hover:border-slate-700
+                  hover:shadow-md
+                "
+              >
+                {/* Top content */}
+                <div className="space-y-2">
+                  <h3 className="text-base font-semibold leading-snug text-slate-100">
+                    {job.job_title}
+                  </h3>
 
-                  <Text size="sm" c="dimmed">
+                  <p className="text-sm text-slate-400">
                     {job.job_provider || "Unknown Provider"}
-                  </Text>
+                  </p>
+                </div>
 
-                  <Button
-                    component="a"
+                {/* Spacer to push CTA down */}
+                <div className="flex-1" />
+
+                {/* Footer */}
+                <div className="mt-6 space-y-3">
+                  <a
                     href={job.job_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    fullWidth
-                    mt="md"
+                    className="
+                      inline-flex w-full justify-center
+                      rounded-xl
+                      bg-indigo-600
+                      px-4 py-2.5
+                      text-sm font-medium
+                      text-white
+                      transition
+                      hover:bg-indigo-500
+                    "
                   >
                     Apply Now
-                  </Button>
+                  </a>
 
-                  {/* Source */}
-                  <Text size="xs" c="dimmed" mt="sm">
-                    {detectJobSource(job)}
-                  </Text>
-                </Card>
-              </Grid.Col>
+                  <p className="text-xs text-slate-500 text-center">
+                    Source: {detectJobSource(job)}
+                  </p>
+                </div>
+              </article>
             ))}
-          </Grid>
+          </div>
 
-          {/* ➖ Divider between dates */}
-          <Divider my="xl" />
-        </div>
+          {/* Divider */}
+          <div className="h-px w-full bg-slate-800" />
+        </section>
       ))}
-    </Container>
+    </div>
   );
 }
 

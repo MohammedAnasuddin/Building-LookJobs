@@ -1,4 +1,3 @@
-import { Container, Loader, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import HeaderMegaMenu from "../Home/Header/Header";
@@ -79,9 +78,12 @@ export default function Dashboard() {
   -----------------------------------*/
   if (isLoading || loading) {
     return (
-      <Container style={{ textAlign: "center", marginTop: "5rem" }}>
-        <Loader />
-      </Container>
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-100">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-700 border-t-indigo-500" />
+          <p className="text-sm text-slate-400">Preparing your dashboard…</p>
+        </div>
+      </div>
     );
   }
 
@@ -89,35 +91,58 @@ export default function Dashboard() {
      RENDER
   -----------------------------------*/
   return (
-    <>
+    <div className="min-h-screen bg-slate-950 text-slate-100">
       <HeaderMegaMenu />
 
-      <Container size="lg" style={{ marginTop: "4rem" }}>
-        <Text size="xl" fw={600}>
-          Welcome, {user?.name}
-        </Text>
+      <main className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 py-10 space-y-8">
+        {/* Header */}
+        <div className="space-y-1">
+          <h1 className="text-2xl sm:text-3xl font-semibold">
+            Welcome back, {user?.name}
+          </h1>
+          
+        </div>
 
-        {/* 🟡 FIRST TIME USER → SHOW REQUEST BUTTON */}
+        {/* First-time user */}
         {!hasRequestedJob && (
-          <JobFormModal
-            userId={userId}
-            user={user}
-            onSuccess={(newJobId) => {
-              setJobId(newJobId);
-              setHasRequestedJob(true);
-              setIsScraping(true);
-            }}
-          />
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+            <h2 className="text-lg font-medium">Start your job search</h2>
+            <p className="mt-1 text-sm text-slate-400">
+              Tell us what roles you’re looking for and we’ll fetch
+              opportunities for you daily.
+            </p>
+
+            <div className="mt-4">
+              <JobFormModal
+                userId={userId}
+                user={user}
+                onSuccess={(newJobId) => {
+                  setJobId(newJobId);
+                  setHasRequestedJob(true);
+                  setIsScraping(true);
+                }}
+              />
+            </div>
+          </div>
         )}
 
-        {/* 🔄 JOB REQUESTED BUT SCRAPING IN PROGRESS */}
+        {/* Scraping state */}
         {hasRequestedJob && isScraping && (
-          <Text mt="xl">🔄 Fetching jobs for you, please wait...</Text>
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 flex items-center gap-4">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-600 border-t-indigo-500" />
+            <p className="text-sm text-slate-300">
+              Fetching the latest jobs for you. This may take a moment…
+            </p>
+          </div>
         )}
 
-        {/* ✅ JOBS AVAILABLE */}
-        {jobs.length > 0 && <CardsGrid jobs={jobs} />}
-      </Container>
-    </>
+        {/* Jobs */}
+        {jobs.length > 0 && (
+          <section className="space-y-4">
+            <CardsGrid jobs={jobs} />
+          </section>
+        )}
+      </main>
+    </div>
   );
 }

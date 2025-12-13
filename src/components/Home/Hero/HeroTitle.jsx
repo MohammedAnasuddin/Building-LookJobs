@@ -1,15 +1,12 @@
-import { Button, Container, Group, Text } from "@mantine/core";
-import { GithubIcon } from "@mantinex/dev-icons";
-import classes from "./HeroTitle.module.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
+import { Github } from "lucide-react";
 
 export default function HeroTitle() {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading } = useAuth0();
 
-  // 🔁 Redirect logged-in users to dashboard
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
       navigate("/dashboard");
@@ -19,46 +16,84 @@ export default function HeroTitle() {
   if (isLoading) return null;
 
   return (
-    <div className={classes.wrapper}>
-      <Container size={800} className={classes.inner}>
-        <h1 className={classes.title}>
+    <section className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100 flex items-center">
+      {/* Background glow */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute left-1/2 top-[-35%] h-[500px] w-[500px] sm:h-[650px] sm:w-[650px] lg:h-[800px] lg:w-[800px] -translate-x-1/2 rounded-full bg-indigo-600/20 blur-[140px]" />
+      </div>
+
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8 text-center">
+        {/* Headline */}
+        <h1
+          className="
+          mx-auto max-w-[22rem]
+          text-3xl leading-tight font-semibold
+          sm:max-w-xl sm:text-4xl
+          md:max-w-2xl md:text-5xl
+          lg:max-w-3xl lg:text-6xl
+          xl:text-7xl
+          font-[Space_Grotesk]
+        "
+        >
           A{" "}
-          <Text
-            component="span"
-            variant="gradient"
-            gradient={{ from: "blue", to: "cyan" }}
-            inherit
-          >
+          <span className="whitespace-nowrap bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
             Revolution
-          </Text>{" "}
-          In the Modern World Job Hunt
+          </span>{" "}
+          <span className="block sm:inline">in the Modern Job Hunt</span>
         </h1>
 
-        <Text className={classes.description} color="dimmed">
-          All your new job opportunities on a single screen.
-        </Text>
+        {/* Description */}
+        <p
+          className="
+          mx-auto mt-4 max-w-xs text-sm text-slate-400
+          sm:mt-6 sm:max-w-md sm:text-base
+          md:max-w-lg md:text-lg
+          lg:max-w-xl lg:text-xl
+          font-[Inter]
+        "
+        >
+          All your new job opportunities, scraped and organized daily on a
+          single screen.
+        </p>
 
-        <Group className={classes.controls}>
-          <Button
-            size="xl"
-            variant="gradient"
-            gradient={{ from: "blue", to: "cyan" }}
+        {/* Actions */}
+        <div
+          className="
+          mt-8 flex flex-col items-center gap-3
+          sm:mt-10 sm:flex-row sm:justify-center sm:gap-4
+          font-[Inter]
+        "
+        >
+          <button
             onClick={() => navigate("/login")}
+            className="
+              rounded-xl bg-indigo-600 px-6 py-3
+              text-sm sm:text-base
+              font-medium text-white
+              transition hover:bg-indigo-500
+            "
           >
             Get started
-          </Button>
+          </button>
 
-          <Button
-            component="a"
+          <a
             href="https://github.com/MohammedAnasuddin/Building-LookJobs"
-            size="xl"
-            variant="default"
-            leftSection={<GithubIcon size={20} />}
+            target="_blank"
+            rel="noreferrer"
+            className="
+              inline-flex items-center gap-2
+              rounded-xl border border-slate-700
+              px-6 py-3
+              text-sm sm:text-base
+              text-slate-300
+              transition hover:bg-slate-800 hover:text-white
+            "
           >
+            <Github size={18} />
             GitHub
-          </Button>
-        </Group>
-      </Container>
-    </div>
+          </a>
+        </div>
+      </div>
+    </section>
   );
 }

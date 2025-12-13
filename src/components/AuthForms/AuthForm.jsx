@@ -1,11 +1,12 @@
-import { Button, Paper, Text, Container, Loader, Group } from "@mantine/core";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ Import navigate hook
+import { useNavigate } from "react-router-dom";
 
 function AuthenticationForm() {
-  const { loginWithRedirect, logout, isAuthenticated, user, isLoading, error } = useAuth0();
-  const navigate = useNavigate(); // ✅ Initialize navigation
+  const { loginWithRedirect, logout, isAuthenticated, user, isLoading, error } =
+    useAuth0();
+
+  const navigate = useNavigate();
 
   const registerUser = async () => {
     if (!user) return;
@@ -14,18 +15,21 @@ function AuthenticationForm() {
       const response = await fetch("http://localhost:5000/api/register-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: "0", name: user.name, email: user.email }),
+        body: JSON.stringify({
+          userId: "0",
+          name: user.name,
+          email: user.email,
+        }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        console.log("User registered:", data.user);
-        navigate("/dashboard"); // ✅ Redirect to dashboard after successful login
+        navigate("/dashboard");
       } else {
         console.error("Registration failed:", data.message);
       }
-    } catch (error) {
-      console.error("Error registering user:", error);
+    } catch (err) {
+      console.error("Error registering user:", err);
     }
   };
 
@@ -35,37 +39,59 @@ function AuthenticationForm() {
     }
   }, [isAuthenticated]);
 
+  /* ---------------- Loading ---------------- */
   if (isLoading) {
     return (
-      <Container size="xs" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <Loader size="lg" />
-      </Container>
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-100">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-700 border-t-indigo-500" />
+          <p className="text-sm text-slate-400">Signing you in…</p>
+        </div>
+      </div>
     );
   }
 
+  /* ---------------- Screen ---------------- */
   return (
-    <Container size="xs" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <Paper withBorder shadow="md" p={30} radius="md" style={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+      <div className="w-full max-w-sm rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 text-center text-slate-100">
         {isAuthenticated ? (
           <>
-            <Text size="lg" fw={500}>Welcome, {user?.name}!</Text>
-            <Text color="dimmed" size="sm" mt="xs">{user?.email}</Text>
-            <Group mt="md">
-              <Button fullWidth color="red" onClick={() => logout({ returnTo: window.location.origin })}>
-                Logout
-              </Button>
-            </Group>
+            <h2 className="text-xl font-semibold">Welcome, {user?.name}</h2>
+
+            <p className="mt-1 text-sm text-slate-400">{user?.email}</p>
+
+            <button
+              onClick={() => logout({ returnTo: window.location.origin })}
+              className="mt-6 w-full rounded-xl bg-red-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-red-500"
+            >
+              Logout
+            </button>
           </>
         ) : (
           <>
-            <Text size="lg" fw={500}>Welcome to LookJobs</Text>
-            <Text color="dimmed" size="sm" mt="xs">Please log in or register to continue</Text>
-            {error && <Text color="red" size="sm" mt="md">{error.message}</Text>}
-            <Button fullWidth mt="md" onClick={() => loginWithRedirect()}>Login / Register</Button>
+            <h2 className="text-xl font-semibold">Welcome to LookJobs</h2>
+
+            <p className="mt-2 text-sm text-slate-400">
+              Log in or register to continue
+            </p>
+
+            {error && (
+              <p className="mt-4 rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
+                {error.message}
+              </p>
+            )}
+
+            <button
+              onClick={() => loginWithRedirect()}
+              className="mt-6 w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-indigo-500"
+            >
+              Login / Register
+            </button>
           </>
         )}
-      </Paper>
-    </Container>
+      </div>
+    </div>
   );
 }
 
