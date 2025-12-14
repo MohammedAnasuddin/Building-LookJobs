@@ -14,12 +14,12 @@ const scrapeJobs = async (job_id) => {
   try {
     console.log(`🔍 Starting job scraping for job_id: ${job_id}`);
 
-    // 🔹 Scrape date (used as JSON key)
-    const scrapeDate = moment().format("YYYY-MM-DD");
+    // ✅ DECLARE ONCE (SOURCE OF TRUTH)
+    const scrapeDate = moment().utc().format("YYYY-MM-DD");
+    
 
     // 1️⃣ Fetch job requirements
     const jobQuery = "SELECT * FROM public.job_requirements WHERE job_id = $1";
-
     const { rows } = await pool.query(jobQuery, [job_id]);
 
     if (rows.length === 0) {
@@ -31,7 +31,7 @@ const scrapeJobs = async (job_id) => {
 
     // 2️⃣ Launch Puppeteer
     const browser = await puppeteer.launch({
-      headless: true, // true in production
+      headless: true,
       userDataDir: "user",
       args: [
         "--no-sandbox",
@@ -46,12 +46,14 @@ const scrapeJobs = async (job_id) => {
     // 3️⃣ Run scrapers
     let allJobResults = [];
 
-    try {
-      const linkedInResults = await linkedInScraper(browser, jobRequirements);
-      allJobResults.push(...linkedInResults);
-      console.log(`✅ LinkedIn: ${linkedInResults.length} jobs`);
-    } catch (e) {
-      console.error("❌ LinkedIn scraper failed:", e.message);
+    if (false) {
+      try {
+        const linkedInResults = await linkedInScraper(browser, jobRequirements);
+        allJobResults.push(...linkedInResults);
+        console.log(`✅ LinkedIn: ${linkedInResults.length} jobs`);
+      } catch (e) {
+        console.error("❌ LinkedIn scraper failed:", e.message);
+      }
     }
 
     try {
@@ -70,41 +72,43 @@ const scrapeJobs = async (job_id) => {
       console.error("❌ Indeed scraper failed:", e.message);
     }
 
-    try {
-      const internshalaResults = await internshalaScraper(
-        browser,
-        jobRequirements
-      );
-      allJobResults.push(...internshalaResults);
-      console.log(`✅ Internshala: ${internshalaResults.length} jobs`);
-    } catch (e) {
-      console.error("❌ Internshala scraper failed:", e.message);
+    if (jobRequirements.will_Intern) {
+      try {
+        const internshalaResults = await internshalaScraper(
+          browser,
+          jobRequirements
+        );
+        allJobResults.push(...internshalaResults);
+        console.log(`✅ Internshala: ${internshalaResults.length} jobs`);
+      } catch (e) {
+        console.error("❌ Internshala scraper failed:", e.message);
+      }
     }
 
     // 4️⃣ Close browser
     await browser.close();
     console.log("✅ Puppeteer browser closed");
 
-    // 5️⃣ Store results in NEW table
-    // const scrapeDate = moment().format("YYYY-MM-DD");
-
+    // 5️⃣ Store results (REUSE scrapeDate)
     console.log(
       `[DB] Storing ${allJobResults.length} jobs for ${job_id} on ${scrapeDate}`
     );
 
     const upsertQuery = `
-  INSERT INTO public.job_scrape_results (job_id, jobs_by_date)
-  VALUES (
-    $1,
-    jsonb_build_object($2::text, $3::jsonb)
-  )
-  ON CONFLICT (job_id)
-  DO UPDATE SET
-    jobs_by_date =
-      public.job_scrape_results.jobs_by_date ||
-      jsonb_build_object($2::text, $3::jsonb),
-    updated_at = NOW();
-`;
+      INSERT INTO public.job_scrape_results (job_id, jobs_by_date)
+      VALUES (
+        $1,
+        jsonb_build_object($2::text, $3::jsonb)
+      )
+      ON CONFLICT (job_id)
+      DO UPDATE SET
+        jobs_by_date =
+          public.job_scrape_results.jobs_by_date ||
+          jsonb_build_object($2::text, $3::jsonb),
+        updated_at = NOW();
+    `;
+
+    console.log("Date Key: ", scrapeDate);
 
     await pool.query(upsertQuery, [
       job_id,

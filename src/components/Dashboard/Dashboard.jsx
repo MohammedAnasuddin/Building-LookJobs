@@ -5,19 +5,17 @@ import JobFormModal from "./Job_Form";
 import CardsGrid from "./cards_grid";
 
 export default function Dashboard() {
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user, isLoading } = useAuth0();
   const userId = user?.sub;
 
-  // CORE STATES
   const [jobId, setJobId] = useState(null);
-  const [jobs, setJobs] = useState([]);
+  const [jobsByDate, setJobsByDate] = useState({});
+  const [jobTitle, setJobTitle] = useState("");
   const [hasRequestedJob, setHasRequestedJob] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  /* ----------------------------------
-     1️⃣ FETCH USER PROFILE
-  -----------------------------------*/
+  /* 1️⃣ FETCH USER PROFILE */
   useEffect(() => {
     if (!userId) return;
 
@@ -30,13 +28,11 @@ export default function Dashboard() {
 
         if (data.job_id) {
           setJobId(data.job_id);
+          setJobTitle(data.job_title); // 👈 IMPORTANT
           setHasRequestedJob(true);
-        } else {
-          setJobId(null);
-          setHasRequestedJob(false);
         }
       } catch (err) {
-        console.error("❌ Profile fetch failed", err);
+        console.error("Profile fetch failed", err);
       } finally {
         setLoading(false);
       }
@@ -45,9 +41,7 @@ export default function Dashboard() {
     fetchProfile();
   }, [userId]);
 
-  /* ----------------------------------
-     2️⃣ FETCH + POLL JOBS WHEN jobId EXISTS
-  -----------------------------------*/
+  /* 2️⃣ FETCH JOBS (FULL JSON) */
   useEffect(() => {
     if (!jobId) return;
 
@@ -58,24 +52,18 @@ export default function Dashboard() {
         const res = await fetch(`http://localhost:5000/api/jobs/${jobId}`);
         const data = await res.json();
 
-        const dates = Object.keys(data.jobs_by_date || {}).sort();
-        const latestDate = dates.at(-1);
-        const latestJobs = data.jobs_by_date?.[latestDate] || [];
-
-        if (latestJobs.length > 0) {
-          setJobs(latestJobs);
-          setIsScraping(false); // ✅ stop loader
-          clearInterval(intervalId); // ✅ stop polling
+        if (data.jobs_by_date) {
+          setJobsByDate(data.jobs_by_date);
+          setIsScraping(false);
+          clearInterval(intervalId);
         }
       } catch (err) {
-        console.error("❌ Jobs fetch failed", err);
+        console.error("Jobs fetch failed", err);
       }
     };
 
-    // First fetch
     fetchJobs();
 
-    // Poll only while scraping
     if (isScraping) {
       intervalId = setInterval(fetchJobs, 5000);
     }
@@ -83,73 +71,30 @@ export default function Dashboard() {
     return () => clearInterval(intervalId);
   }, [jobId, isScraping]);
 
-  /* ----------------------------------
-     LOADING STATE
-  -----------------------------------*/
   if (isLoading || loading) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-100">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-700 border-t-indigo-500" />
-          <p className="text-sm text-slate-400">Preparing your dashboard…</p>
-        </div>
-      </div>
-    );
+    return <div className="min-h-screen bg-slate-950" />;
   }
 
-  /* ----------------------------------
-     RENDER
-  -----------------------------------*/
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <HeaderMegaMenu />
 
-      <main className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 py-10 space-y-8">
-        {/* Header */}
-        <div className="space-y-1">
-          <h1 className="text-2xl sm:text-3xl font-semibold">
-            Welcome back, {user?.name}
-          </h1>
-        </div>
+      <main className="px-6 py-10 mx-auto space-y-10 max-w-7xl">
+        <h1 className="text-2xl font-semibold">Welcome back, {user?.name}</h1>
 
-        {/* First-time user */}
         {!hasRequestedJob && (
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-            <h2 className="text-lg font-medium">Start your job search</h2>
-            <p className="mt-1 text-sm text-slate-400">
-              Tell us what roles you’re looking for and we’ll fetch
-              opportunities for you daily.
-            </p>
-
-            <div className="mt-4">
-              <JobFormModal
-                userId={userId}
-                user={user}
-                onSuccess={(newJobId) => {
-                  setJobId(newJobId);
-                  setHasRequestedJob(true);
-                  setIsScraping(true); // ✅ start polling
-                }}
-              />
-            </div>
-          </div>
+          <JobFormModal
+            userId={userId}
+            onSuccess={(newJobId) => {
+              setJobId(newJobId);
+              setHasRequestedJob(true);
+              setIsScraping(true);
+            }}
+          />
         )}
 
-        {/* Scraping state */}
-        {hasRequestedJob && isScraping && (
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 flex items-center gap-4">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-600 border-t-indigo-500" />
-            <p className="text-sm text-slate-300">
-              Fetching the latest jobs for you. This may take a moment…
-            </p>
-          </div>
-        )}
-
-        {/* Jobs */}
-        {jobs.length > 0 && (
-          <section className="space-y-4">
-            <CardsGrid jobs={jobs} />
-          </section>
+        {Object.keys(jobsByDate).length > 0 && (
+          <CardsGrid jobsByDate={jobsByDate} jobTitle={jobTitle} />
         )}
       </main>
     </div>
