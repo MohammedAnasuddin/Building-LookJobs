@@ -7,6 +7,7 @@ import addUser from "./Database/new_user.js";
 import pool from "./Database/db_setup.js";
 import { runScrapeCycle } from "./cron/jobScraperCron.js";
 
+
 const app = express();
 const PORT = 5000;
 
@@ -24,6 +25,9 @@ app.post("/api/demo/run-scraper", async (req, res) => {
 
 app.get("/api/user/profile/:userId", async (req, res) => {
   const { userId } = req.params;
+  
+
+
 
   try {
     const result = await pool.query(
