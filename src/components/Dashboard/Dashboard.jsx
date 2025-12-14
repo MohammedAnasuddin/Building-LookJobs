@@ -10,12 +10,12 @@ export default function Dashboard() {
 
   const [jobId, setJobId] = useState(null);
   const [jobsByDate, setJobsByDate] = useState({});
-  const [jobTitle, setJobTitle] = useState("");
+  const [jobTitle, setJobTitle] = useState(null);
   const [hasRequestedJob, setHasRequestedJob] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  /* 1️⃣ FETCH USER PROFILE */
+  /* ---------------- FETCH PROFILE ---------------- */
   useEffect(() => {
     if (!userId) return;
 
@@ -28,11 +28,11 @@ export default function Dashboard() {
 
         if (data.job_id) {
           setJobId(data.job_id);
-          setJobTitle(data.job_title); // 👈 IMPORTANT
+          setJobTitle(data.job_title);
           setHasRequestedJob(true);
         }
-      } catch (err) {
-        console.error("Profile fetch failed", err);
+      } catch (e) {
+        console.error(e);
       } finally {
         setLoading(false);
       }
@@ -41,38 +41,30 @@ export default function Dashboard() {
     fetchProfile();
   }, [userId]);
 
-  /* 2️⃣ FETCH JOBS (FULL JSON) */
+  /* ---------------- FETCH JOB RESULTS ---------------- */
   useEffect(() => {
     if (!jobId) return;
-
-    let intervalId;
 
     const fetchJobs = async () => {
       try {
         const res = await fetch(`http://localhost:5000/api/jobs/${jobId}`);
         const data = await res.json();
-
-        if (data.jobs_by_date) {
-          setJobsByDate(data.jobs_by_date);
-          setIsScraping(false);
-          clearInterval(intervalId);
-        }
-      } catch (err) {
-        console.error("Jobs fetch failed", err);
+        setJobsByDate(data.jobs_by_date || {});
+        setIsScraping(false);
+      } catch (e) {
+        console.error(e);
       }
     };
 
     fetchJobs();
-
-    if (isScraping) {
-      intervalId = setInterval(fetchJobs, 5000);
-    }
-
-    return () => clearInterval(intervalId);
-  }, [jobId, isScraping]);
+  }, [jobId]);
 
   if (isLoading || loading) {
-    return <div className="min-h-screen bg-slate-950" />;
+    return (
+      <div className="flex items-center justify-center min-h-screen text-white bg-slate-950">
+        Loading…
+      </div>
+    );
   }
 
   return (
@@ -80,21 +72,32 @@ export default function Dashboard() {
       <HeaderMegaMenu />
 
       <main className="px-6 py-10 mx-auto space-y-10 max-w-7xl">
-        <h1 className="text-2xl font-semibold">Welcome back, {user?.name}</h1>
+        {/* HEADER */}
+        <div className="space-y-2">
+          <h1 className="text-3xl font-semibold">Welcome back, {user?.name}</h1>
 
+          {jobTitle && <p className="text-lg text-slate-300">{jobTitle}</p>}
+        </div>
+
+        {/* FIRST TIME */}
         {!hasRequestedJob && (
           <JobFormModal
             userId={userId}
-            onSuccess={(newJobId) => {
-              setJobId(newJobId);
+            onSuccess={(id, title) => {
+              setJobId(id);
+              setJobTitle(title);
               setHasRequestedJob(true);
               setIsScraping(true);
             }}
           />
         )}
 
+        {/* LOADER */}
+        {isScraping && <p className="text-slate-400">Fetching jobs…</p>}
+
+        {/* RESULTS */}
         {Object.keys(jobsByDate).length > 0 && (
-          <CardsGrid jobsByDate={jobsByDate} jobTitle={jobTitle} />
+          <CardsGrid jobsByDate={jobsByDate} />
         )}
       </main>
     </div>

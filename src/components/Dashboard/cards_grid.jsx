@@ -1,5 +1,5 @@
 function detectJobSource(job) {
-  const text = `${job.OpportunityID || ""} ${job.job_id || ""}`.toUpperCase();
+  const text = `${job.OpportunityID || ""} ${job.job_URL || ""}`.toUpperCase();
   if (text.includes("NKRI")) return "Naukri";
   if (text.includes("INDD")) return "Indeed";
   if (text.includes("INTSH")) return "Internshala";
@@ -12,44 +12,39 @@ function formatDate(date) {
   return `${d}-${m}-${y}`;
 }
 
-function CardsGrid({ jobsByDate, jobTitle }) {
-  const sortedDates = Object.keys(jobsByDate).sort().reverse();
+export default function CardsGrid({ jobsByDate }) {
+  const dates = Object.keys(jobsByDate).sort().reverse();
 
   return (
-    <div className="space-y-20">
-      {sortedDates.map((date) => {
+    <div className="space-y-16">
+      {dates.map((date) => {
         const jobs = jobsByDate[date];
 
         return (
           <section key={date} className="space-y-6">
-            {/* HEADER */}
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-xl font-semibold">{jobTitle}</h2>
+            {/* DATE + COUNT */}
+            <div className="flex gap-4">
+              <div className="px-5 py-3 rounded-xl bg-slate-900">
+                <p className="text-xs text-slate-400">Date</p>
+                <p className="text-lg font-semibold">{formatDate(date)}</p>
+              </div>
 
-              <div className="flex gap-4">
-                <div className="px-4 py-2 rounded-xl bg-slate-900">
-                  <p className="text-xs text-slate-400">Date</p>
-                  <p className="text-lg font-semibold">{formatDate(date)}</p>
-                </div>
-
-                <div className="px-4 py-2 rounded-xl bg-slate-900">
-                  <p className="text-xs text-slate-400">Jobs Found</p>
-                  <p className="text-lg font-semibold">{jobs.length}</p>
-                </div>
+              <div className="px-5 py-3 rounded-xl bg-slate-900">
+                <p className="text-xs text-slate-400">Jobs Found</p>
+                <p className="text-lg font-semibold">{jobs.length}</p>
               </div>
             </div>
 
-            {/* CARDS */}
+            {/* CARDS GRID */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {jobs.map((job, idx) => (
-                <article
+                <div
                   key={idx}
                   className="flex flex-col p-6 border rounded-2xl border-slate-800 bg-slate-900"
                 >
-                  <div>
-                    <h3 className="font-semibold">{job.job_title}</h3>
-                    <p className="text-sm text-slate-400">{job.job_provider}</p>
-                  </div>
+                  <h3 className="text-base font-semibold">{job.job_title}</h3>
+
+                  <p className="text-sm text-slate-400">{job.job_provider}</p>
 
                   <div className="flex-1" />
 
@@ -62,15 +57,16 @@ function CardsGrid({ jobsByDate, jobTitle }) {
                       href={job.job_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-4 py-2 text-sm bg-indigo-600 rounded-xl"
+                      className="px-4 py-2 text-sm font-medium bg-indigo-600 rounded-xl hover:bg-indigo-500"
                     >
                       Apply Now
                     </a>
                   </div>
-                </article>
+                </div>
               ))}
             </div>
 
+            {/* DIVIDER */}
             <div className="h-px bg-slate-800" />
           </section>
         );
@@ -78,5 +74,3 @@ function CardsGrid({ jobsByDate, jobTitle }) {
     </div>
   );
 }
-
-export default CardsGrid;

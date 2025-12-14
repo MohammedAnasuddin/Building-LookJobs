@@ -7,16 +7,13 @@ export default function HeaderMegaMenu() {
 
   return (
     <header className="w-full bg-slate-950">
-      <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="flex items-center justify-between h-16 px-5 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {/* Left side (logo / app name) */}
+
+        
         <div
           onClick={() => navigate("/dashboard")}
-          className="
-  text-lg
-  sm:text-xl
-  lg:text-2xl
-  font-bold text-slate-100 tracking-tight
-"
+          className="text-lg font-bold tracking-tight sm:text-xl lg:text-2xl text-slate-100"
         >
           LookJobs
         </div>
