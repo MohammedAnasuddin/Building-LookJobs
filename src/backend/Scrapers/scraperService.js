@@ -16,7 +16,6 @@ const scrapeJobs = async (job_id) => {
 
     // ✅ DECLARE ONCE (SOURCE OF TRUTH)
     const scrapeDate = moment().utc().format("YYYY-MM-DD");
-    
 
     // 1️⃣ Fetch job requirements
     const jobQuery = "SELECT * FROM public.job_requirements WHERE job_id = $1";
@@ -31,7 +30,7 @@ const scrapeJobs = async (job_id) => {
 
     // 2️⃣ Launch Puppeteer
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       userDataDir: "user",
       args: [
         "--no-sandbox",

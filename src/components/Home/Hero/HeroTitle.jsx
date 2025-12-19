@@ -16,18 +16,18 @@ export default function HeroTitle() {
   if (isLoading) return null;
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100 flex items-center">
+    <section className="relative flex items-center min-h-screen overflow-hidden bg-slate-950 text-slate-100">
       {/* Background glow */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-[-35%] h-[500px] w-[500px] sm:h-[650px] sm:w-[650px] lg:h-[800px] lg:w-[800px] -translate-x-1/2 rounded-full bg-indigo-600/20 blur-[140px]" />
       </div>
 
-      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8 text-center">
+      <div className="w-full max-w-6xl px-5 mx-auto text-center sm:px-6 lg:px-8">
         {/* Headline */}
         <h1
           className="
           mx-auto max-w-[22rem]
-          text-3xl leading-tight font-semibold
+          text-3xl leading-tight font-extrabold
           sm:max-w-xl sm:text-4xl
           md:max-w-2xl md:text-5xl
           lg:max-w-3xl lg:text-6xl
@@ -36,7 +36,7 @@ export default function HeroTitle() {
         "
         >
           A{" "}
-          <span className="whitespace-nowrap bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+          <span className="text-transparent whitespace-nowrap bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text">
             Revolution
           </span>{" "}
           <span className="block sm:inline">in the Modern Job Hunt</span>
@@ -66,12 +66,7 @@ export default function HeroTitle() {
         >
           <button
             onClick={() => navigate("/login")}
-            className="
-              rounded-xl bg-indigo-600 px-6 py-3
-              text-sm sm:text-base
-              font-medium text-white
-              transition hover:bg-indigo-500
-            "
+            className="px-6 py-3 text-sm font-medium text-white transition bg-indigo-600 rounded-xl sm:text-base hover:bg-indigo-500"
           >
             Get started
           </button>
@@ -80,14 +75,7 @@ export default function HeroTitle() {
             href="https://github.com/MohammedAnasuddin/Building-LookJobs"
             target="_blank"
             rel="noreferrer"
-            className="
-              inline-flex items-center gap-2
-              rounded-xl border border-slate-700
-              px-6 py-3
-              text-sm sm:text-base
-              text-slate-300
-              transition hover:bg-slate-800 hover:text-white
-            "
+            className="inline-flex items-center gap-2 px-6 py-3 text-sm transition border rounded-xl border-slate-700 sm:text-base text-slate-300 hover:bg-slate-800 hover:text-white"
           >
             <Github size={18} />
             GitHub

@@ -236,8 +236,11 @@
 
 // puppeteer.use(StealthPlugin());
 
-const USERNAME = "lookjobs.project@gmail.com";
-const PASSWORD = "lookJObs@linkedIN";
+import dotenv from "dotenv";
+dotenv.config();
+
+const USERNAME = process.env.LINKEDIN_MAIL;
+const PASSWORD = process.env.LINKEDIN_PASSWORD;
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -323,7 +326,7 @@ const linkedInScraper = async (browser, jobRequirements) => {
   const searchFilters = await page.$$("li.search-reusables__primary-filter");
 
   // **Apply "Past 24 Hours" Filter**
-  console.log("🕒 Applying 'Past 24 Hours' filter...");
+  console.log("Applying 'Past 24 Hours' filter...");
   await searchFilters[1].click();
   await delay(500);
 
