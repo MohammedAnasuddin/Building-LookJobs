@@ -52,8 +52,7 @@ export default function HeroTitle() {
           font-[Inter]
         "
         >
-          All your new job opportunities, scraped and organized daily on a
-          single screen.
+          All your new job opportunities,organized daily on a single screen.
         </p>
 
         {/* Actions */}

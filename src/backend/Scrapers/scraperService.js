@@ -71,7 +71,7 @@ const scrapeJobs = async (job_id) => {
       console.error("❌ Indeed scraper failed:", e.message);
     }
 
-    if (jobRequirements.will_Intern) {
+    if (jobRequirements.will_intern) {
       try {
         const internshalaResults = await internshalaScraper(
           browser,

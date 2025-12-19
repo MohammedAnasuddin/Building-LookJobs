@@ -5,11 +5,24 @@ const naukriScraper = async (browser, jobRequirements) => {
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  // 1. Construct Search URL with jobAge=1 (Last 24 hours)
+  // 1. Construct Search URL
   const jobTitle = jobRequirements.job_title.split(" ").join("-");
   const location = jobRequirements.location.toLowerCase();
 
-  const naukriUrl = `https://www.naukri.com/${jobTitle.toLowerCase()}-jobs-in-${location}?jobAge=1`;
+  // Base params: last 24 hours
+  let queryParams = "jobAge=1";
+
+  // Remote jobs
+  if (jobRequirements.can_remote) {
+    queryParams += "&wfhType=2";
+  }
+
+  // Fresher jobs
+  if (jobRequirements.is_fresher) {
+    queryParams += "&experience=0";
+  }
+
+  const naukriUrl = `https://www.naukri.com/${jobTitle.toLowerCase()}-jobs-in-${location}?${queryParams}`;
 
   console.log(`Navigating to Naukri URL: ${naukriUrl}`);
   await page.goto(naukriUrl, { waitUntil: "domcontentloaded" });
