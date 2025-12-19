@@ -41,24 +41,41 @@ export default function Dashboard() {
     fetchProfile();
   }, [userId]);
 
-  /* ---------------- FETCH JOB RESULTS ---------------- */
-  useEffect(() => {
+  /* ---------------- FETCH JOBS (REUSABLE) ---------------- */
+  const fetchJobs = async () => {
     if (!jobId) return;
 
-    const fetchJobs = async () => {
-      try {
-        const res = await fetch(`http://localhost:5000/api/jobs/${jobId}`);
-        const data = await res.json();
-        setJobsByDate(data.jobs_by_date || {});
-        setIsScraping(false);
-      } catch (e) {
-        console.error(e);
-      }
-    };
+    try {
+      const res = await fetch(`http://localhost:5000/api/jobs/${jobId}`);
+      const data = await res.json();
 
+      if (data.jobs_by_date && Object.keys(data.jobs_by_date).length > 0) {
+        setJobsByDate(data.jobs_by_date);
+        setIsScraping(false); // stop polling when jobs arrive
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  /* ---------------- INITIAL FETCH ---------------- */
+  useEffect(() => {
+    if (!jobId) return;
     fetchJobs();
   }, [jobId]);
 
+  /* ---------------- POLLING WHILE SCRAPING ---------------- */
+  useEffect(() => {
+    if (!isScraping || !jobId) return;
+
+    const interval = setInterval(() => {
+      fetchJobs();
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [isScraping, jobId]);
+
+  /* ---------------- LOADING SCREEN ---------------- */
   if (isLoading || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen text-white bg-slate-950">
@@ -75,11 +92,9 @@ export default function Dashboard() {
         {/* HEADER */}
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold">Welcome back, {user?.name}</h1>
-
-          {jobTitle && <p className="text-lg text-slate-300">{jobTitle}</p>}
         </div>
 
-        {/* FIRST TIME */}
+        {/* FIRST TIME USER */}
         {!hasRequestedJob && (
           <JobFormModal
             userId={userId}
@@ -92,12 +107,27 @@ export default function Dashboard() {
           />
         )}
 
-        {/* LOADER */}
-        {isScraping && <p className="text-slate-400">Fetching jobs…</p>}
+        {/* SPINNER */}
+        {isScraping && (
+          <div className="flex flex-col items-center justify-center py-24 space-y-4">
+            <div className="w-12 h-12 border-4 rounded-full border-slate-700 border-t-sky-500 animate-spin"></div>
+        
+          </div>
+        )}
 
         {/* RESULTS */}
         {Object.keys(jobsByDate).length > 0 && (
-          <CardsGrid jobsByDate={jobsByDate} />
+          <>
+            {/* JOB TITLE + META */}
+            <div className="space-y-1">
+              <h2 className="text-2xl font-semibold text-slate-100">
+                {jobTitle}
+              </h2>
+            
+            </div>
+
+            <CardsGrid jobsByDate={jobsByDate} />
+          </>
         )}
       </main>
     </div>
