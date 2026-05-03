@@ -8,43 +8,43 @@ This is the backend service for the LookJobs project, a job scraping and managem
 
 - [Project Structure](#project-structure)
 - [Key Components](#key-components)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
 - [API Endpoints](#api-endpoints)
 - [Background Jobs](#background-jobs)
 - [Technologies Used](#technologies-used)
-- [Future Improvements](#future-improvements)
 
 ## Project Structure
 
 ```
 backend/
-├── .env                  # Environment variables (not committed)
+├── .env                  # Environment variables 
 ├── cookies/              # Storage for browser cookies (used by scrapers)
-├── src/                  # Source code
+├── src/                  
 │   ├── controllers/      # Request handlers (logic for each route)
 │   │   ├── demo.controller.js
 │   │   ├── jobs.controller.js
 │   │   └── user.controller.js
+│   │
 │   ├── cron/             # Scheduled tasks (using node-cron)
 │   │   └── scraper.cron.js
+│   │
 │   ├── db/               # Database configuration and queries
-│   │   ├── db_setup.js   # PostgreSQL connection pool
-│   │   └── new_user.js   # User insertion logic
-│   ├── middleware/       # Custom middleware (if any)
+│   │   ├── db_setup.js   
+│   │   └── new_user.js   
+│   │
 │   ├── routes/           # API route definitions
-│   │   ├── demo.routes.js
 │   │   ├── jobs.routes.js
 │   │   └── user.routes.js
+│   │
 │   ├── scrapers/         # Web scraping logic (using Puppeteer)
 │   │   └── ...           # (Various scraper files for different job sites)
-│   ├── services/         # Business logic layer
+│   │
+│   ├── services/         
 │   │   └── user.service.js
+│   │
 │   ├── utils/            # Utility functions
-│   └── server.js         # Express application entry point
-├── package.json          # Dependencies and scripts
-├── package-lock.json
-└── user/                 # Chrome user data for Puppeteer (likely for persistent sessions)
+│   └── server.js         # Express application entry point  
+│       
+└── user/                 #user data for Puppeteer (for persistent scraping sessions)
 ```
 
 ## Key Components
@@ -54,12 +54,12 @@ backend/
 Handle incoming HTTP requests, validate input, call services, and send responses.
 
 - `user.controller.js`: Handles user registration and profile retrieval.
-- `jobs.controller.js`: Manages job data retrieval (likely filtering, pagination).
-- `demo.controller.js`: Possibly for testing or demonstration endpoints.
+- `jobs.controller.js`: Manages job data (both Requests and Updates).
+
 
 ### 2. **Services** (`src/services/`)
 
-Contain the core business logic, abstracting data access and operations from controllers.
+Contain the core logic, abstracting data access and operations from controllers.
 
 - `user.service.js`: Interacts with the database for user-related operations (registration, profile fetch).
 
@@ -67,24 +67,21 @@ Contain the core business logic, abstracting data access and operations from con
 
 Define API endpoints and map them to controller functions.
 
-- `user.routes.js`: Routes for `/api/user` (e.g., POST `/register`, GET `/profile/:userId`).
-- `jobs.routes.js`: Routes for `/api/jobs` (e.g., GET for fetching jobs with filters).
-- `demo.routes.js`: Routes for `/api/demo` (likely test endpoints).
+- `user.routes.js`: Routes for `/api/user` 
+- `jobs.routes.js`: Routes for `/api/jobs` 
+
 
 ### 4. **Database** (`src/db/`)
 
 - `db_setup.js`: Sets up the PostgreSQL connection pool using `pg` and validates connection.
 - `new_user.js`: Contains the SQL query or function to insert a new user into the database.
 
-### 5. **Middleware** (`src/middleware/`)
 
-Currently empty, but intended for custom middleware (e.g., authentication, logging, error handling).
-
-### 6. **Cron Jobs** (`src/cron/`)
+### 5. **Cron Jobs** (`src/cron/`)
 
 - `scraper.cron.js`: Scheduled task that triggers job scraping at defined intervals (using `node-cron`). Likely invokes scrapers to fetch new job listings and store them in the database.
 
-### 7. **Scrapers** (`src/scrapers/`)
+### 6. **Scrapers** (`src/scrapers/`)
 
 Contains Puppeteer-based scrapers for various job portals (e.g., LinkedIn, Indeed, etc.). These scripts:
 
@@ -94,11 +91,11 @@ Contains Puppeteer-based scrapers for various job portals (e.g., LinkedIn, Indee
 - Save scraped data to the PostgreSQL database (`job_scrape_results` table).
 - Utilize persistent user data (`cookies/` and `user/` directories) to maintain sessions and avoid repeated logins/captchas.
 
-### 8. **Utilities** (`src/utils/`)
+### 7. **Utilities** (`src/utils/`)
 
 Helper functions (e.g., date formatting, string manipulation, API response wrappers).
 
-### 9. **Server Entry Point** (`src/server.js`)
+### 8. **Server Entry Point** (`src/server.js`)
 
 - Initializes Express app.
 - Configures CORS (origin from `FRONTEND_URL` env var or wildcard).
@@ -123,7 +120,7 @@ Helper functions (e.g., date formatting, string manipulation, API response wrapp
 The backend uses `node-cron` to schedule scraping tasks.
 
 - **File**: `src/cron/scraper.cron.js`
-- **Functionality**: At a scheduled interval (e.g., every 6 hours), it triggers the scraping process for various job portals.
+- **Functionality**: At a scheduled interval (e.g., every 24 hours), it triggers the scraping process for various job portals.
 - **Scrapers**: Located in `src/scrapers/`, each scraper is responsible for a specific job site.
 - **Data Storage**: Scraped job listings are inserted into the `job_scrape_results` table in PostgreSQL.
 - **Dependencies**: Uses `puppeteer`, `puppeteer-extra`, and `puppeteer-extra-plugin-stealth` to avoid bot detection.
@@ -132,13 +129,10 @@ The backend uses `node-cron` to schedule scraping tasks.
 
 - **Runtime**: Node.js
 - **Framework**: Express.js
-- **Database**: PostgreSQL (with `pg` driver)
+- **Database**: PostgreSQL 
 - **ORM/Query Builder**: Raw SQL queries (via `pg`)
-- **Authentication**: JSON Web Tokens (`jsonwebtoken`) - *Note: Currently used? Check services/routes for JWT implementation.*
-- **Secrets Management**: `dotenv`
-- **HTTP Middleware**: `cors`
+- **Authentication**: JSON Web Tokens (`jsonwebtoken`) 
 - **Scheduling**: `node-cron`
 - **Web Scraping**: `puppeteer` with `puppeteer-extra-plugin-stealth`
-- **Unique ID Generation**: `uuid`
-- **Date Handling**: `moment`
-- **HTTP Client**: Implicit via Puppeteer (for scraping) and Express (for API)
+
+
