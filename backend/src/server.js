@@ -5,12 +5,21 @@ import dotenv from "dotenv";
 import jobRoutes from "./routes/jobs.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import demoRoutes from "./routes/demo.routes.js";
-
-
-
+import swaggerUi from "swagger-ui-express";
 import "./cron/scraper.cron.js";
 
-dotenv.config();
+
+
+import fs from "fs";
+
+const swaggerFile = JSON.parse(
+  fs.readFileSync(new URL("./swagger.json", import.meta.url))
+);
+
+
+
+
+
 
 const app = express();
 
@@ -21,9 +30,10 @@ app.use(cors({
 app.use(express.json());
 
 // Routes
-app.use("/api/jobs", jobRoutes);
+// app.use("/api/jobs", jobRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/demo", demoRoutes);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // Health check
 app.get("/", (req, res) => {
