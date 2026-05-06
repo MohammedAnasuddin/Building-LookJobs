@@ -1,31 +1,32 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Auth0Provider } from "@auth0/auth0-react";
-
-import Dashboard from "./pages/Dashboard";
-
-// 🔥 ENV variables
-const auth0Domain = import.meta.env.VITE_AUTH0_DOMAIN;
-const auth0ClientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
-const auth0RedirectUri = import.meta.env.VITE_AUTH0_REDIRECT_URI;
-const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 
 function App() {
   return (
-    <Auth0Provider
-      domain={auth0Domain}
-      clientId={auth0ClientId}
-      authorizationParams={{
-        redirect_uri: auth0RedirectUri,
-        audience: audience, 
-      }}
-    >
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-        </Routes>
-      </BrowserRouter>
-    </Auth0Provider>
-  );
+    <div className="min-h-screen bg-background text-foreground p-6">
+      <div className="mx-auto max-w-md">
+        <Card>
+          <CardHeader>
+            <CardTitle>LookJobs</CardTitle>
+          </CardHeader>
+
+          <CardContent className="space-y-4">
+            <Input placeholder="Search jobs..." />
+
+            <Button className="w-full">
+              Apply
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
 }
 
-export default App;
+export default App
