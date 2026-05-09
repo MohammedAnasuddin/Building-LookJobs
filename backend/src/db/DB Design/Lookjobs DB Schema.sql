@@ -53,7 +53,7 @@ CREATE INDEX "idx_seen_last_seen" ON "job_seen_index" ("last_seen");
 
 CREATE INDEX "idx_seen_job_req_id" ON "job_seen_index" ("job_req_id");
 
-ALTER TABLE "job_requirements" ADD FOREIGN KEY ("job_req_id") REFERENCES "users" ("job_req_id_array") DEFERRABLE INITIALLY IMMEDIATE;
+-- ALTER TABLE "job_requirements" ADD FOREIGN KEY ("job_req_id") REFERENCES "users" ("job_req_id_array") DEFERRABLE INITIALLY IMMEDIATE;
 
 ALTER TABLE "job_update_details" ADD FOREIGN KEY ("job_req_id") REFERENCES "job_requirements" ("job_req_id") DEFERRABLE INITIALLY IMMEDIATE;
 
