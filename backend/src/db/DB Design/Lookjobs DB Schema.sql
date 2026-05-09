@@ -8,7 +8,7 @@ CREATE TABLE "users" (
 CREATE TABLE "job_requirements" (
   "job_req_id" varchar(225) PRIMARY KEY,
   "user_id" varchar(225) NOT NULL,
-  "added_date" date,
+  "added_date" TIMESTAMPTZ DEFAULT NOW(),
   "job_title" varchar(225) NOT NULL,
   "location" varchar(225) NOT NULL,
   "is_remote" boolean,
