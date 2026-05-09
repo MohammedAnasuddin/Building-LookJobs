@@ -1,4 +1,4 @@
-import { Job } from "../types/job"
+import type { Job } from "../types/job"
 
 import { FeedSection } from "./feed-section"
 import { JobCard } from "./job-card"

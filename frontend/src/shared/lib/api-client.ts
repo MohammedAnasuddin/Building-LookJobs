@@ -1,15 +1,16 @@
+type RequestOptions = RequestInit & {
+  token?: string
+}
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL
-
-type RequestOptions = RequestInit & {
-  auth?: boolean
-}
 
 export async function apiClient<T>(
   endpoint: string,
   options: RequestOptions = {}
 ): Promise<T> {
-  const { auth = false, headers, ...rest } = options
+  const { token, headers, ...rest } =
+    options
 
   const response = await fetch(
     `${API_BASE_URL}${endpoint}`,
@@ -19,10 +20,8 @@ export async function apiClient<T>(
       headers: {
         "Content-Type": "application/json",
 
-        ...(auth && {
-          Authorization: `Bearer ${localStorage.getItem(
-            "access_token"
-          )}`,
+        ...(token && {
+          Authorization: `Bearer ${token}`,
         }),
 
         ...headers,

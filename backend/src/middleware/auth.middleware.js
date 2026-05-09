@@ -36,6 +36,7 @@ export const verifyAuth = (req, res, next) => {
     (err, decoded) => {
       if (err) {
         console.error("❌ Token error:", err.message);
+        console.error(err);
         return res.status(401).json({ message: "Invalid token" });
       }
 

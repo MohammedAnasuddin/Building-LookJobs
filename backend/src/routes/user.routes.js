@@ -4,6 +4,8 @@ import {
   registerUser,
   getCurrentUser,
 } from "../controllers/user.controller.js";
+import { verifyAuth } from "../middleware/auth.middleware.js";
+
 
 const router = express.Router();
 
