@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import jobRoutes from "./routes/jobs.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import jobRequirementRoutes from "./routes/jobRequirement.route.js";
+import jobUpdateRoutes from "./routes/jobUpdate.route.js";
 import demoRoutes from "./routes/demo.routes.js";
 
 
@@ -26,6 +27,7 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/demo", demoRoutes);
 app.use("/api/job-requirements", jobRequirementRoutes);
+app.use("/api/job-updates",jobUpdateRoutes);
 
 // Health check
 app.get("/", (req, res) => {
