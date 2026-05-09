@@ -1,4 +1,4 @@
-import addUser from "../db/new_user.js";
+import addUser from "../db/add_user.js";
 import { getUserById } from "../db/get_user_by_id.js";
 import pool from "../db/db_setup.js";
 
@@ -24,7 +24,12 @@ export const getUserProfileService = async (userId) => {
   return { job_id: latestJobId };
 };
 
-export const registerUserService = async (userId, name, email) => {
+
+export const registerUserService = async (
+  userId,
+  name,
+  email
+) => {
   return await addUser(userId, name, email);
 };
 

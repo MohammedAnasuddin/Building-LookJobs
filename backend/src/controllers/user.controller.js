@@ -15,29 +15,46 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
+
 export const registerUser = async (req, res) => {
-  const { userId, name, email } = req.body;
-
-  if (!userId || !name || !email) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-
   try {
-    const result = await registerUserService(userId, name, email);
+    // EXTRACT FROM JWT
+    const userId = req.user.sub;
+
+   
+    const { name, email } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({
+        message: "Missing required fields",
+      });
+    }
+
+    const result = await registerUserService(
+      userId,
+      name,
+      email
+    );
 
     if (result.success) {
-      return res.status(201).json({
-        message: "User registered successfully!",
-        user: result.user,
+      return res.status(200).json({
+        success: true,
+        data: result.user,
       });
     }
 
     return res.status(500).json({
+      success: false,
       message: "Failed to register user",
       error: result.error,
     });
   } catch (err) {
-    return res.status(500).json({ message: "Server error" });
+    console.error("❌ Register user error:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 

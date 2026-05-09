@@ -10,7 +10,7 @@ import { verifyAuth } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.get("/profile/:userId", getUserProfile);
-router.post("/register-user", registerUser);
+router.post("/register",verifyAuth, registerUser);
 router.get("/me", verifyAuth, getCurrentUser);
 
 export default router;
