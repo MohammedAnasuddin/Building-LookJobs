@@ -1,4 +1,5 @@
 import addUser from "../db/new_user.js";
+import { getUserById } from "../db/get_user_by_id.js";
 import pool from "../db/db_setup.js";
 
 export const getUserProfileService = async (userId) => {
@@ -25,4 +26,9 @@ export const getUserProfileService = async (userId) => {
 
 export const registerUserService = async (userId, name, email) => {
   return await addUser(userId, name, email);
+};
+
+
+export const getCurrentUserService = async (userId) => {
+  return await getUserById(userId);
 };

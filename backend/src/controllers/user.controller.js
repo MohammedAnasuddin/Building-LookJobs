@@ -1,6 +1,7 @@
 import {
   getUserProfileService,
   registerUserService,
+  getCurrentUserService,
 } from "../services/user.service.js";
 
 export const getUserProfile = async (req, res) => {
@@ -37,5 +38,27 @@ export const registerUser = async (req, res) => {
     });
   } catch (err) {
     return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+export const getCurrentUser = async (req, res) => {
+  try {
+    const userId = req.user.sub;
+
+    const user = await getCurrentUserService(userId);
+
+    return res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching current user:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch user",
+    });
   }
 };
