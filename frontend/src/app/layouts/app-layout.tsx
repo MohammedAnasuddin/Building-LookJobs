@@ -8,7 +8,9 @@ export function AppLayout() {
         <div className="mx-auto flex h-14 max-w-[820px] items-center justify-between px-4">
           <h1 className="text-sm font-semibold tracking-tight">LookJobs</h1>
 
-          <div className="text-sm text-muted-foreground">Profile</div>
+          <div className="hidden md:block text-sm text-muted-foreground">
+            Profile
+          </div>
         </div>
       </header>
 
