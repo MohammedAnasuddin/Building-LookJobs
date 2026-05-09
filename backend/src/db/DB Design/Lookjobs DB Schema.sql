@@ -19,7 +19,7 @@ CREATE TABLE "job_requirements" (
 CREATE TABLE "job_update_details" (
   "id" serial PRIMARY KEY,
   "job_req_id" varchar(225) NOT NULL,
-  "added_on" date DEFAULT (CURRENT_DATE),
+  "added_on" TIMESTAMPTZ DEFAULT NOW(),
   "job_title" varchar(225) NOT NULL,
   "company" varchar(225),
   "job_provider" varchar(100) NOT NULL,
