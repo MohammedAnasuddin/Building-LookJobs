@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 import jobRoutes from "./routes/jobs.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import jobRequirementRoutes from "./routes/jobRequirement.route.js";
 import demoRoutes from "./routes/demo.routes.js";
 
 
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use("/api/jobs", jobRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/demo", demoRoutes);
+app.use("/api/job-requirements", jobRequirementRoutes);
 
 // Health check
 app.get("/", (req, res) => {
