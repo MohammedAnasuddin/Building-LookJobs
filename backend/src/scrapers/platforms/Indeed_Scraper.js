@@ -1,7 +1,11 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import { saveCookies, loadCookies, clearCookies } from "../../utils/cookieManager.js";
+import {
+  saveCookies,
+  loadCookies,
+  clearCookies,
+} from "../../utils/cookieManager.js";
 import { buildIndeedUrl } from "../../utils/urlBuilders.js";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -18,13 +22,17 @@ const ensureIndeedSession = async (page) => {
 
   // If CAPTCHA or block page detected, clear cookies and retry fresh
   const blocked = await page.evaluate(() => {
-    return document.title.toLowerCase().includes("captcha") ||
+    return (
+      document.title.toLowerCase().includes("captcha") ||
       document.title.toLowerCase().includes("blocked") ||
-      document.body.innerText.toLowerCase().includes("verify you are human");
+      document.body.innerText.toLowerCase().includes("verify you are human")
+    );
   });
 
   if (blocked) {
-    console.log("⚠️  [Indeed] Blocked — clearing cookies and retrying fresh session");
+    console.log(
+      "⚠️  [Indeed] Blocked — clearing cookies and retrying fresh session",
+    );
     clearCookies("indeed");
     await page.goto("https://in.indeed.com", { waitUntil: "domcontentloaded" });
     await delay(2000);
@@ -40,7 +48,7 @@ const ensureIndeedSession = async (page) => {
 const extractIndeedJobs = async (page) => {
   const today = new Date();
   const formattedDate = `${String(today.getDate()).padStart(2, "0")}-${String(
-    today.getMonth() + 1
+    today.getMonth() + 1,
   ).padStart(2, "0")}-${today.getFullYear()}`;
 
   return await page.evaluate((formattedDate) => {
@@ -48,7 +56,8 @@ const extractIndeedJobs = async (page) => {
     return Array.from(jobCards).map((card, i) => {
       const title = card.querySelector(".jobTitle")?.innerText.trim() || "N/A";
       const company =
-        card.querySelector("[data-testid='company-name']")?.innerText.trim() || "N/A";
+        card.querySelector("[data-testid='company-name']")?.innerText.trim() ||
+        "N/A";
       const location =
         card.querySelector(".companyLocation")?.innerText.trim() || "N/A";
       const anchor = card.querySelector("a");
@@ -66,7 +75,9 @@ const extractIndeedJobs = async (page) => {
         job_URL: jobURL,
         Remote: location.toLowerCase().includes("remote"),
         Internship: title.toLowerCase().includes("intern"),
-        Fresher: title.toLowerCase().includes("fresher") || title.toLowerCase().includes("entry"),
+        Fresher:
+          title.toLowerCase().includes("fresher") ||
+          title.toLowerCase().includes("entry"),
         isNew: true,
       };
     });
@@ -98,14 +109,17 @@ const indeedScraper = async (browser, allJobRequirements) => {
       await delay(2000);
 
       // Check for CAPTCHA
-      const blocked = await page.evaluate(() =>
-        document.body.innerText.toLowerCase().includes("verify you are human") ||
-        document.title.toLowerCase().includes("captcha")
+      const blocked = await page.evaluate(
+        () =>
+          document.body.innerText
+            .toLowerCase()
+            .includes("verify you are human") ||
+          document.title.toLowerCase().includes("captcha"),
       );
 
       if (blocked) {
         console.log(`   ⚠️  CAPTCHA detected — skipping this round`);
-        results[req.job_id] = [];
+        results[req.job_req_id] = [];
         await delay(5000); // Wait longer before next request
         continue;
       }
@@ -114,14 +128,14 @@ const indeedScraper = async (browser, allJobRequirements) => {
         await page.waitForSelector(".job_seen_beacon", { timeout: 8000 });
       } catch {
         console.log(`   ⚠️  No results found`);
-        results[req.job_id] = [];
+        results[req.job_req_id] = [];
         continue;
       }
 
       await delay(1000);
       const jobs = await extractIndeedJobs(page);
       console.log(`   ✅ ${jobs.length} jobs found`);
-      results[req.job_id] = jobs;
+      results[req.job_req_id] = jobs;
 
       // Save updated cookies after each successful request
       await saveCookies(page, "indeed");
@@ -129,7 +143,7 @@ const indeedScraper = async (browser, allJobRequirements) => {
       await delay(3000 + Math.random() * 2000);
     } catch (err) {
       console.error(`   ❌ Failed:`, err.message);
-      results[req.job_id] = [];
+      results[req.job_req_id] = [];
     }
   }
 

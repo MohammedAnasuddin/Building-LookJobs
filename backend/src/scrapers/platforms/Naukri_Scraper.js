@@ -8,21 +8,23 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const extractNaukriJobs = async (page) => {
   const today = new Date();
   const formattedDate = `${String(today.getDate()).padStart(2, "0")}-${String(
-    today.getMonth() + 1
+    today.getMonth() + 1,
   ).padStart(2, "0")}-${today.getFullYear()}`;
 
   return await page.evaluate((formattedDate) => {
     const jobCards = document.querySelectorAll(".srp-jobtuple-wrapper");
     return Array.from(jobCards).map((card, i) => {
       const jobTitle = card.querySelector(".title")?.innerText.trim() || "N/A";
-      const company = card.querySelector(".comp-name")?.innerText.trim() || "N/A";
+      const company =
+        card.querySelector(".comp-name")?.innerText.trim() || "N/A";
       const location = card.querySelector(".loc")?.innerText.trim() || "N/A";
       const jobURL = card.querySelector("a.title")?.href || "N/A";
       const exp = card.querySelector(".exp")?.innerText.trim() || "";
 
       // FIX: Extract clean job ID from URL instead of storing full URL
       // Naukri URL pattern: /job-listings-title-company-city-123456789
-      const rawId = jobURL.split("/").pop()?.split("?")[0] || `${Math.random()}`;
+      const rawId =
+        jobURL.split("/").pop()?.split("?")[0] || `${Math.random()}`;
       const jobId = `NAUKRI-${rawId}`;
 
       return {
@@ -72,19 +74,19 @@ const naukriScraper = async (browser, allJobRequirements) => {
         await page.waitForSelector(".srp-jobtuple-wrapper", { timeout: 8000 });
       } catch {
         console.log(`   ⚠️  No results found`);
-        results[req.job_id] = [];
+        results[req.job_req_id] = [];
         continue;
       }
 
       await delay(800);
       const jobs = await extractNaukriJobs(page);
       console.log(`   ✅ ${jobs.length} jobs found`);
-      results[req.job_id] = jobs;
+      results[req.job_req_id] = jobs;
 
       await delay(2000 + Math.random() * 1500);
     } catch (err) {
       console.error(`   ❌ Failed:`, err.message);
-      results[req.job_id] = [];
+      results[req.job_req_id] = [];
     }
   }
 

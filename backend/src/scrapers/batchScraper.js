@@ -44,17 +44,17 @@ export async function runScrapeBatch() {
     let totalJobs = 0;
 
     for (const req of allRequirements) {
-      const jobId = req.job_id;
+      const jobReqId = req.job_req_id;
 
       try {
-        const rawJobs = results[jobId] || [];
+        const rawJobs = results[jobReqId] || [];
 
-        console.log(`📊 ${jobId}: ${rawJobs.length} scraped`);
+        console.log(`📊 ${jobReqId}: ${rawJobs.length} scraped`);
 
         // ✅ Step 1 — AI relevance filter
         const relevantJobs = await filterRelevantJobs(rawJobs, req);
 
-        console.log(`🧠 ${jobId}: ${relevantJobs.length} relevant`);
+        console.log(`🧠 ${jobReqId}: ${relevantJobs.length} relevant`);
 
         if (relevantJobs.length === 0) continue;
 
@@ -75,16 +75,16 @@ export async function runScrapeBatch() {
 
         const newJobs = relevantJobs.filter((job) => !seenSet.has(job.job_id));
 
-        console.log(`🧹 ${jobId}: ${newJobs.length} after dedup`);
+        console.log(`🧹 ${jobReqId}: ${newJobs.length} after dedup`);
 
         if (newJobs.length === 0) continue;
 
         // ✅ Step 3 — Store results
-        await storeResults(jobId, newJobs);
+        await storeResults(jobReqId, newJobs);
 
         totalJobs += newJobs.length;
       } catch (err) {
-        console.error(`❌ Failed processing job ${jobId}:`, err.message);
+        console.error(`❌ Failed processing job ${jobReqId}:`, err.message);
       }
     }
 

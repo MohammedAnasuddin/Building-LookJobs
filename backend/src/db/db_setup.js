@@ -15,7 +15,7 @@ const pool = new Pool({
 const check = await pool.query(`
   SELECT table_schema, table_name
   FROM information_schema.tables
-  WHERE table_name = 'job_scrape_results'
+  WHERE table_name = 'job_update_details'
 `);
 console.log("✅ Node sees tables:", check.rows);
 

@@ -165,20 +165,20 @@ const linkedInScraper = async (browser, allJobRequirements) => {
         await page.waitForSelector(".job-card-container", { timeout: 8000 });
       } catch {
         console.log(`   ⚠️  No results found`);
-        results[req.job_id] = [];
+        results[req.job_req_id] = [];
         continue;
       }
 
       await delay(1000);
       const jobs = await extractLinkedInJobs(page);
       console.log(`   ✅ ${jobs.length} jobs found`);
-      results[req.job_id] = jobs;
+      results[req.job_req_id] = jobs;
 
       // Polite delay between searches
       await delay(3000 + Math.random() * 2000);
     } catch (err) {
       console.error(`   ❌ Failed:`, err.message);
-      results[req.job_id] = [];
+      results[req.job_req_id] = [];
     }
   }
 

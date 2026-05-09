@@ -8,7 +8,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const extractInternshalaJobs = async (page) => {
   const today = new Date();
   const formattedDate = `${String(today.getDate()).padStart(2, "0")}-${String(
-    today.getMonth() + 1
+    today.getMonth() + 1,
   ).padStart(2, "0")}-${today.getFullYear()}`;
 
   return await page.evaluate((formattedDate) => {
@@ -60,13 +60,17 @@ const internshalaScraper = async (browser, allJobRequirements) => {
 
   for (const req of allJobRequirements) {
     // Only scrape Internshala if user wants internships OR is a fresher
-    if (!req.will_intern && !req.is_fresher) {
-      console.log(`   ⏭️  Skipping ${req.job_title} — not intern/fresher requirement`);
-      results[req.job_id] = [];
+    if (!req.is_intern && !req.is_fresher) {
+      console.log(
+        `   ⏭️  Skipping ${req.job_title} — not intern/fresher requirement`,
+      );
+      results[req.job_req_id] = [];
       continue;
     }
 
-    console.log(`🔍 [Internshala] Scraping: "${req.job_title}" in ${req.location}`);
+    console.log(
+      `🔍 [Internshala] Scraping: "${req.job_title}" in ${req.location}`,
+    );
     try {
       const url = buildInternshalaUrl(req);
       console.log(`   → ${url}`);
@@ -77,19 +81,19 @@ const internshalaScraper = async (browser, allJobRequirements) => {
         await page.waitForSelector(".internship_meta", { timeout: 10000 });
       } catch {
         console.log(`   ⚠️  No results found`);
-        results[req.job_id] = [];
+        results[req.job_req_id] = [];
         continue;
       }
 
       await delay(800);
       const jobs = await extractInternshalaJobs(page);
       console.log(`   ✅ ${jobs.length} jobs found`);
-      results[req.job_id] = jobs;
+      results[req.job_req_id] = jobs;
 
       await delay(2000 + Math.random() * 1000);
     } catch (err) {
       console.error(`   ❌ Failed:`, err.message);
-      results[req.job_id] = [];
+      results[req.job_req_id] = [];
     }
   }
 

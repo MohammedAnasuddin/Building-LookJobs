@@ -1,24 +1,18 @@
 import pool from "./db_setup.js";
 
-export async function getJobUpdatesForJob(jobId) {
+export async function getJobUpdatesForJob(jobReqId) {
   try {
     const result = await pool.query(
       `
-      SELECT jobs_by_date
-      FROM job_scrape_results
-      WHERE job_id = $1
+      SELECT *
+      FROM job_update_details
+      WHERE job_req_id = $1
+      ORDER BY added_on DESC
       `,
-      [jobId]
+      [jobReqId],
     );
 
-    // If no scrape yet, return empty object
-    if (result.rows.length === 0) {
-      return { jobs_by_date: {} };
-    }
-
-    return {
-      jobs_by_date: result.rows[0].jobs_by_date || {},
-    };
+    return result.rows;
   } catch (err) {
     console.error("❌ getJobUpdatesForJob error:", err);
     throw err;

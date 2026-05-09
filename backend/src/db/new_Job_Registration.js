@@ -6,7 +6,7 @@ import moment from "moment";
 import { runScrapeForJob } from "../scrapers/userScraper.js";
 
 export const addNewJob = async (jobData, userId) => {
-  const jobId = `job_${uuidv4()}`;
+  const jobReqId = `job_${uuidv4()}`;
 
   if (!userId) {
     return { success: false, error: "User ID missing" };
@@ -18,11 +18,11 @@ export const addNewJob = async (jobData, userId) => {
     // 1️⃣ Ensure user
     await pool.query(
       `
-      INSERT INTO users (user_id, jid_array)
-      VALUES ($1, ARRAY[]::text[])
+      INSERT INTO users (user_id, job_req_id_array)
+      VALUES ($1, ARRAY[]::varchar[])
       ON CONFLICT (user_id) DO NOTHING
       `,
-      [userId]
+      [userId],
     );
 
     // 2️⃣ Insert job
@@ -30,48 +30,50 @@ export const addNewJob = async (jobData, userId) => {
       `
       INSERT INTO job_requirements
       (
-        job_id,
+        job_req_id,
+        user_id,
         job_title,
         location,
-        can_remote,
+        is_remote,
+        is_intern,
         is_fresher,
-        will_intern,
-        job_added_date
+        added_date
       )
-      VALUES ($1, $2, $3, $4, $5, $6, NOW())
+      VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
       `,
       [
-        jobId,
+        jobReqId,
+        userId,
         jobData.job_title,
         jobData.location,
-        jobData.canRemote ?? false,
+        jobData.is_remote ?? false,
+        jobData.is_intern ?? false,
         jobData.isFresher ?? false,
-        jobData.willIntern ?? false,
-      ]
+      ],
     );
 
     // 3️⃣ Attach job to user
     await pool.query(
       `
       UPDATE users
-      SET jid_array = ARRAY_APPEND(jid_array, $1)
+      SET job_req_id_array = ARRAY_APPEND(job_req_id_array, $1)
       WHERE user_id = $2
       `,
-      [jobId, userId]
+      [jobReqId, userId],
     );
 
     await pool.query("COMMIT");
 
-    console.log(`✅ Job ${jobId} added for user ${userId}`);
+    console.log(`✅ Job ${jobReqId} added for user ${userId}`);
 
     // 🔥 NEW FLOW (USER SCRAPER)
-    console.log(`🔥 Starting USER scraper for: ${jobId}`);
+    console.log(`🔥 Starting USER scraper for: ${jobReqId}`);
 
-    runScrapeForJob(jobId).catch((err) =>
-      console.error("❌ User scraper failed:", err)
+    runScrapeForJob(jobReqId).catch((err) =>
+      console.error("❌ User scraper failed:", err),
     );
 
-    return { success: true, jobId };
+    return { success: true, jobReqId };
   } catch (error) {
     await pool.query("ROLLBACK");
     console.error("❌ Error adding job:", error.message);

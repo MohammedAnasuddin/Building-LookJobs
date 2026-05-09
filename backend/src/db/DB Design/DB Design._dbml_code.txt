@@ -1,0 +1,89 @@
+// =========================
+// Users
+// =========================
+Table users {
+  user_id varchar(225) [pk]
+  name varchar(225)
+  email varchar(225)
+
+  // Optional cached array of requirement IDs
+  job_req_id_array  varchar[]
+}
+
+// =========================
+// Job Requirements
+// =========================
+Table job_requirements {
+  job_req_id varchar(225) [pk]
+  user_id varchar(225) [not null]
+  added_date date 
+
+  job_title varchar(225) [not null]
+  location varchar(225) [not null]
+
+  is_remote boolean 
+  is_intern boolean 
+  is_fresher boolean 
+}
+
+// =========================
+// Job Update Details
+// =========================
+Table job_update_details {
+  id serial [pk]
+  job_req_id varchar(225) [not null]
+  added_on date [default: `CURRENT_DATE`]
+
+  job_title varchar(225) [not null]
+  company varchar(225)
+
+  job_provider varchar(100) [not null]
+  job_location varchar(225) [not null]
+
+  job_url varchar(500) [not null]
+
+  is_internship boolean 
+  is_remote boolean 
+  is_fresher boolean 
+
+  Indexes {
+    job_req_id [name: 'idx_details_job_req_id']
+  }
+}
+
+// =========================
+// Job Seen Index
+// =========================
+Table job_seen_index {
+  id serial [pk]
+
+  platform_job_id varchar(225) [unique, not null]
+  job_req_id varchar(225) [not null]
+
+  source varchar(100)
+  title varchar(225)
+  company varchar(225)
+  location varchar(225)
+  url varchar(500)
+
+  first_seen timestamptz [default: `NOW()`]
+  last_seen timestamptz [default: `NOW()`]
+
+  seen_count integer [default: 1]
+  is_active boolean [default: true]
+
+  Indexes {
+    platform_job_id [name: 'idx_seen_platform_job_id']
+    last_seen [name: 'idx_seen_last_seen']
+    job_req_id [name: 'idx_seen_job_req_id']
+  }
+}
+
+// =========================
+// Relationships
+// =========================
+Ref: job_requirements.job_req_id > users.job_req_id_array
+
+Ref: job_update_details.job_req_id > job_requirements.job_req_id
+
+Ref: job_seen_index.job_req_id > job_requirements.job_req_id

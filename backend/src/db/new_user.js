@@ -16,8 +16,8 @@ export default async function addUser(userId, name, email) {
     console.log("Received user details writing in to db");
 
     const insertQuery = `
-    INSERT INTO users (user_id, name, email)
-    VALUES ($1, $2, $3)
+    INSERT INTO users (user_id, name, email, job_req_id_array)
+    VALUES ($1, $2, $3, $4)
     ON CONFLICT (user_id) DO NOTHING;
   `;
     const values = [userId, name, email, []];
