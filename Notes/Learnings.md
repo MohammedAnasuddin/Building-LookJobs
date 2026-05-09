@@ -38,3 +38,42 @@ export interface Job {
 
 mock-jobs.ts
 import type { Job } from "../types/job"
+
+
+
+## Utilizing Hooks
+Create:
+
+src/features/jobs/hooks/use-jobs-feed.ts
+
+This hook becomes:
+
+the feed orchestrator
+
+🎯 Why This Matters
+
+Instead of:
+
+filtering inside components
+scattered logic
+duplicated state
+
+You centralize:
+
+active preference
+search query
+filtered jobs
+
+inside ONE feature hook.
+
+This is scalable architecture.
+
+Important Learning
+
+Notice:
+
+state logic is OUTSIDE UI
+components become cleaner
+business behavior becomes reusable
+
+This is proper React architecture.

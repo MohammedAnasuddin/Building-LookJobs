@@ -6,9 +6,20 @@ const preferences = [
   "DevOps",
 ]
 
-export function JobPreferenceTabs() {
+type JobPreferenceTabsProps = {
+  value: string
+  onChange: (value: string) => void
+}
+
+export function JobPreferenceTabs({
+  value,
+  onChange,
+}: JobPreferenceTabsProps) {
   return (
-    <Tabs defaultValue="Full Stack">
+    <Tabs
+      value={value}
+      onValueChange={onChange}
+    >
       <div className="overflow-x-auto pb-1">
         <TabsList className="inline-flex h-10 w-max gap-2 bg-transparent p-0">
           {preferences.map((preference) => (

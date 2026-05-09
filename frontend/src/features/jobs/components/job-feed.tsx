@@ -1,18 +1,22 @@
-import { mockJobs } from "../data/mock-jobs"
+import { Job } from "../types/job"
 
 import { FeedSection } from "./feed-section"
 import { JobCard } from "./job-card"
 
-export function JobFeed() {
-  const todayJobs = mockJobs.filter(
+type JobFeedProps = {
+  jobs: Job[]
+}
+
+export function JobFeed({ jobs }: JobFeedProps) {
+  const todayJobs = jobs.filter(
     (job) => job.dayGroup === "today"
   )
 
-  const yesterdayJobs = mockJobs.filter(
+  const yesterdayJobs = jobs.filter(
     (job) => job.dayGroup === "yesterday"
   )
 
-  const weekJobs = mockJobs.filter(
+  const weekJobs = jobs.filter(
     (job) => job.dayGroup === "week"
   )
 
@@ -45,7 +49,7 @@ export function JobFeed() {
       )}
 
       {!!weekJobs.length && (
-        <FeedSection title="Last 7 days">
+        <FeedSection title="Last 7 Days">
           <div className="space-y-3">
             {weekJobs.map((job) => (
               <JobCard
