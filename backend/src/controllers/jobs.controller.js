@@ -20,6 +20,9 @@ export const getJobUpdates = async (req, res) => {
   }
 };
 
+
+
+
 export const createJob = async (req, res) => {
   const userId = req.user.sub; 
   const jobData = req.body;
