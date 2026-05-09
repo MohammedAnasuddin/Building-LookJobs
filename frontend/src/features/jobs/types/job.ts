@@ -9,4 +9,6 @@ export interface Job {
   isFresher?: boolean;
 
   applyUrl: string;
+
+  dayGroup: "today" | "yesterday" | "week"
 }

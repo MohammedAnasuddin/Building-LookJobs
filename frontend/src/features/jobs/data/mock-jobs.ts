@@ -10,6 +10,7 @@ export const mockJobs: Job[] = [
     isRemote: true,
     isFresher: true,
     applyUrl: "#",
+    dayGroup: "today"
   },
   {
     id: "2",
@@ -19,6 +20,7 @@ export const mockJobs: Job[] = [
     postedAt: "5h ago",
     isRemote: true,
     applyUrl: "#",
+    dayGroup: "yesterday"
   },
   {
     id: "3",
@@ -28,5 +30,6 @@ export const mockJobs: Job[] = [
     postedAt: "1d ago",
     isFresher: true,
     applyUrl: "#",
+    dayGroup: "week"
   },
 ];
