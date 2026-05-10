@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react"
 import { NavLink, Outlet } from "react-router-dom"
+import { useAuthBootstrap } from "@/features/user/hooks/use-auth-bootstrap"
 
 export function AppLayout() {
   const {
@@ -8,6 +9,8 @@ export function AppLayout() {
     isAuthenticated,
     getAccessTokenSilently,
   } = useAuth0()
+
+  useAuthBootstrap()
 
   return (
     <div className="min-h-screen bg-background text-foreground">

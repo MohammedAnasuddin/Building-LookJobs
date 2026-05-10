@@ -1,5 +1,7 @@
+import { getAccessToken } from "./auth-token"
+
 type RequestOptions = RequestInit & {
-  token?: string
+  auth?: boolean
 }
 
 const API_BASE_URL =
@@ -9,8 +11,17 @@ export async function apiClient<T>(
   endpoint: string,
   options: RequestOptions = {}
 ): Promise<T> {
-  const { token, headers, ...rest } =
-    options
+  const {
+    auth = false,
+    headers,
+    ...rest
+  } = options
+
+  let token: string | null = null
+
+  if (auth) {
+    token = await getAccessToken()
+  }
 
   const response = await fetch(
     `${API_BASE_URL}${endpoint}`,
