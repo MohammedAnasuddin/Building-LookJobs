@@ -10,6 +10,10 @@ import { useJobUpdates } from "@/features/job-updates/hooks/use-job-updates";
 
 import { ACTIVE_REQUIREMENT_STORAGE_KEY } from "@/shared/constants/storage";
 
+import { JobFeedSkeleton } from "@/features/job-updates/components/job-feed-skeleton";
+
+import { JobRequirementTabsSkeleton } from "@/features/job-requirements/components/job-requirement-tabs-skeleton";
+
 export function JobsFeed() {
   const { data: requirementsData, isLoading: isRequirementsLoading } =
     useJobRequirements();
@@ -51,8 +55,20 @@ export function JobsFeed() {
 
   if (isRequirementsLoading) {
     return (
-      <div className="text-sm text-muted-foreground">
-        Loading requirements...
+      <div>
+        <div className="mb-6 flex items-center justify-between">
+          <div className="space-y-2">
+            <div className="h-6 w-32 rounded-full bg-muted" />
+
+            <div className="h-4 w-64 rounded-full bg-muted" />
+          </div>
+
+          <div className="h-10 w-40 rounded-full bg-muted" />
+        </div>
+
+        <JobRequirementTabsSkeleton />
+
+        <JobFeedSkeleton />
       </div>
     );
   }
@@ -92,7 +108,7 @@ export function JobsFeed() {
 
           {/* Feed Loading */}
           {isUpdatesLoading ? (
-            <div className="text-sm text-muted-foreground">Loading jobs...</div>
+            <JobFeedSkeleton />
           ) : updates.length === 0 ? (
             <div className="rounded-2xl border border-border p-6">
               <p className="text-sm text-muted-foreground">
