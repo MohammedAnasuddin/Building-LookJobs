@@ -8,6 +8,8 @@ import { useJobRequirements } from "@/features/job-requirements/hooks/use-job-re
 
 import { useJobUpdates } from "@/features/job-updates/hooks/use-job-updates";
 
+import { ACTIVE_REQUIREMENT_STORAGE_KEY } from "@/shared/constants/storage";
+
 export function JobsFeed() {
   const { data: requirementsData, isLoading: isRequirementsLoading } =
     useJobRequirements();
@@ -15,14 +17,32 @@ export function JobsFeed() {
   const requirements = requirementsData?.data || [];
 
   const [activeRequirementId, setActiveRequirementId] = useState<string | null>(
-    null,
+    () => {
+      return localStorage.getItem(ACTIVE_REQUIREMENT_STORAGE_KEY);
+    },
   );
 
   useEffect(() => {
-    if (requirements.length > 0 && !activeRequirementId) {
+    if (requirements.length === 0) {
+      return;
+    }
+
+    const requirementExists = requirements.some(
+      (requirement) => requirement.job_req_id === activeRequirementId,
+    );
+
+    if (!requirementExists) {
       setActiveRequirementId(requirements[0].job_req_id);
     }
   }, [requirements, activeRequirementId]);
+
+  useEffect(() => {
+    if (!activeRequirementId) {
+      return;
+    }
+
+    localStorage.setItem(ACTIVE_REQUIREMENT_STORAGE_KEY, activeRequirementId);
+  }, [activeRequirementId]);
 
   const { data: updatesData, isLoading: isUpdatesLoading } =
     useJobUpdates(activeRequirementId);
