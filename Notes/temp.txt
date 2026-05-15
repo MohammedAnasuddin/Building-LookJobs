@@ -26,3 +26,107 @@ PHASE 5
 Requirement Creation Flow
 
 The app becomes truly usable.
+
+
+
+
+🎯 NEXT PHASE ROADMAP (VERY IMPORTANT)
+
+We should do THIS exact order now:
+
+PHASE 1
+Create Requirement Flow
+
+MOST important next.
+
+Without this:
+users cannot actually use the product.
+
+This includes:
+
+modal/sheet
+form
+create mutation
+query invalidation
+PHASE 2
+Persistent Active Tab
+
+Currently:
+active tab resets on refresh.
+
+Need:
+
+localStorage persistence
+
+VERY important UX.
+
+PHASE 3
+Loading Skeletons
+
+Replace:
+
+Loading...
+
+with:
+
+skeleton cards
+tab skeletons
+
+Major polish improvement.
+
+PHASE 4
+Empty States
+
+Need:
+
+no requirements state
+no jobs state
+scraper running state
+
+Very important.
+
+PHASE 5
+Delete Requirement
+
+Needed for:
+
+cleanup
+usability
+tab management
+PHASE 6
+Feed Polling
+
+VERY important for your product identity.
+
+Example:
+
+refetchInterval: 5 * 60 * 1000
+
+This creates:
+
+continuously updating feeds.
+
+VERY aligned with LookJobs.
+
+PHASE 7
+Feed Grouping
+
+This becomes VERY powerful later.
+
+Examples:
+
+Today
+Yesterday
+Older
+
+This dramatically improves feed readability.
+
+PHASE 8
+Real Profile Page
+
+Eventually:
+
+auth profile
+tracked searches
+settings
+logout
