@@ -1,4 +1,4 @@
-import { JobRequirement } from "../types/job-requirement";
+import type { JobRequirement } from "../types/job-requirement";
 
 type JobRequirementTabsProps = {
   requirements: JobRequirement[];
