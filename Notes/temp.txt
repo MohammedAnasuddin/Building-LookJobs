@@ -1,0 +1,28 @@
+PHASE 1
+Real Job Requirement Queries
+
+Replace:
+❌ mock tabs
+
+with:
+✅ backend-driven requirements
+
+PHASE 2
+Active Requirement State
+
+Real selected JID.
+
+PHASE 3
+Real Feed Query
+
+Fetch jobs for active JID.
+
+PHASE 4
+Loading + Empty States
+
+Critical UX polish.
+
+PHASE 5
+Requirement Creation Flow
+
+The app becomes truly usable.
