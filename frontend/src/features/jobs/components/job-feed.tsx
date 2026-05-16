@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import { Search } from "lucide-react";
+
+import { Input } from "@/components/ui/input";
 
 import { CreateJobRequirementDialog } from "@/features/job-requirements/components/create-job-requirement-dialog";
 
@@ -54,12 +58,24 @@ export function JobsFeed() {
     useJobUpdates(activeRequirementId);
 
   const updates = updatesData?.data || [];
-  const groupedUpdates = groupJobUpdates(updates);
+
+  const [search, setSearch] = useState("");
+
+  const filteredUpdates = useMemo(() => {
+    return updates.filter((job) => {
+      return [job.job_title, job.company, job.job_location, job.job_provider]
+        .join(" ")
+        .toLowerCase()
+        .includes(search.toLowerCase());
+    });
+  }, [updates, search]);
+
+  const groupedUpdates = groupJobUpdates(filteredUpdates);
 
   if (isRequirementsLoading) {
     return (
-      <div>
-        <div className="mb-6 flex items-center justify-between">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
           <div className="space-y-2">
             <div className="h-6 w-32 rounded-full bg-muted" />
 
@@ -77,11 +93,11 @@ export function JobsFeed() {
   }
 
   return (
-    <div>
+    <div className="space-y-6 ">
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">Job Feed</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Job Feed</h1>
 
           <p className="mt-1 text-sm text-muted-foreground">
             Personalized opportunities updated continuously.
@@ -91,7 +107,7 @@ export function JobsFeed() {
         <CreateJobRequirementDialog />
       </div>
 
-      {/* Empty Requirements State */}
+      {/* Empty State */}
       {requirements.length === 0 ? (
         <div className="rounded-2xl border border-border p-6">
           <h2 className="mb-2 text-lg font-semibold">No tracked jobs yet</h2>
@@ -102,20 +118,32 @@ export function JobsFeed() {
         </div>
       ) : (
         <>
-          {/* Requirement Tabs */}
+          {/* Tabs */}
           <JobRequirementTabs
             requirements={requirements}
             activeRequirementId={activeRequirementId}
             onSelect={setActiveRequirementId}
           />
 
-          {/* Feed Loading */}
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+
+            <Input
+              placeholder="Search jobs, companies, locations..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="h-11 rounded-xl pl-10"
+            />
+          </div>
+
+          {/* Feed */}
           {isUpdatesLoading ? (
             <JobFeedSkeleton />
-          ) : updates.length === 0 ? (
+          ) : groupedUpdates.length === 0 ? (
             <div className="rounded-2xl border border-border p-6">
               <p className="text-sm text-muted-foreground">
-                No jobs found yet for this requirement.
+                No jobs found for this search.
               </p>
             </div>
           ) : (
