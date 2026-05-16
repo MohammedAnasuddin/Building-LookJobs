@@ -202,3 +202,121 @@ tabs persist
 jobs update
 
 That is the first complete product loop.
+
+
+
+
+
+
+
+
+
+
+
+
+Registering user in DB
+Registering user in DB
+🚀 [User] Scraping jid_1ccd3f69-1ae9-4252-95a3-3a444df23a91
+⏭️ LinkedIn skipped
+🚀 [Indeed] Starting scraper...
+✅ [indeed] Cookies loaded
+🍪 [indeed] Cookies saved
+✅ [Indeed] Session ready
+🔍 [Indeed] Scraping: "Full Stack Developer" in Hyderabad, India
+   → https://in.indeed.com/jobs?q=Full+Stack+Developer&l=Hyderabad%2C+India&fromage=1&sort=date&explvl=ENTRY_LEVEL
+   ✅ 16 jobs found
+🍪 [indeed] Cookies saved
+🔒 [Indeed] Done
+✅ Indeed done
+🚀 [Naukri] Starting scraper...
+🔍 [Naukri] Scraping: "Full Stack Developer" in Hyderabad, India
+   → https://www.naukri.com/full-stack-developer-jobs-in-hyderabad, india?jobAge=1&experience=0
+   ✅ 20 jobs found
+🔒 [Naukri] Done
+✅ Naukri done
+🚀 [Internshala] Starting scraper...
+🔍 [Internshala] Scraping: "Full Stack Developer" in Hyderabad, India
+   → https://internshala.com/jobs/full-stack-developer-jobs-in-hyderabad, india/?sort_by=posted_date
+   ✅ 40 jobs found
+🔒 [Internshala] Done
+✅ Internshala done
+   [Groq] "Lead Software Engineer" → ❌ not relevant
+   [Groq] "Staff Software Engineer, Storage AI/ML" → ✅ relevant
+   [Groq] "Developer II" → ✅ relevant
+   [Groq] "Senior SSIS Developer" → ❌ not relevant
+   [Groq] "Software Engineer II, Google Ads" → ✅ relevant
+   [Groq] "Software Engineer II, Payments" → ✅ relevant
+   [Groq] "Custom Software Engineer" → ✅ relevant
+   [Groq] "Senior Software Engineer (Test Automation)" → ❌ not relevant
+   [Groq] "Senior Full Stack Engineer (AI/ML)" → ✅ relevant
+   [Groq] "Java Full Stack Developer" → ✅ relevant
+   [Groq] "IT Software Developer, Staff" → ✅ relevant
+   [Groq] "Programmer Analyst, Lead" → ✅ relevant
+   [Groq] "Senior Full Stack Developer" → ✅ relevant
+   [Groq] "Senior Full Stack Developer – React JS / React Native / Node.js" → ✅ relevant
+   [Groq] "Senior Full Stack Developer – React JS / React Native / Node.js" → ✅ relevant
+   [Groq] ".NET Core ReactJS Developer" → ✅ relevant
+   [Groq] "Full Stack Developer I" → ✅ relevant
+   [Groq] "In Person Interview Full Stack Developer React+Nestjs" → ❌ not relevant
+   [Groq] "Azure Full Stack Developer-Virtual Interview-9th May" → ❌ not relevant
+   [Groq] "Full Stack Developer" → ❌ not relevant
+   [Groq] "Full Stack Developer" → ❌ not relevant
+   [Groq] "Full stack Developer (Java+React)" → ❌ not relevant
+   [Groq] "Azure Full Stack Developer" → ✅ relevant
+   [Groq] "Full Stack Developer - Golang" → ❌ not relevant
+   [Groq] "ADF Full stack Developer" → ❌ not relevant
+   [Groq] "Full Stack Developer Product" → ❌ not relevant
+   [Groq] "Full Stack Developer" → ❌ not relevant
+   [Groq] "Full Stack Developer" → ❌ not relevant
+   [Groq] "Full stack Developer ( AI )" → ❌ not relevant
+   [Groq] "Full Stack Developer" → ❌ not relevant
+   [Groq] "CoE - Digital Engineering - Full Stack Developer" → ❌ not relevant
+   [Groq] "Full Stack Developer" → ❌ not relevant
+   [Groq] "Full Stack Developer &amp Cloud Engineering" → ❌ not relevant
+   [Groq] "AWS Full Stack Developer (GDC)" → ✅ relevant
+   [Groq] "Azure AI Full Stack Developer" → ✅ relevant
+   [Groq] "SAP Full Stack Developer (AI Developer)" → ✅ relevant
+   [Groq] "Full Stack Developer" → ✅ relevant
+   [Groq] "Full Stack Developer" → ✅ relevant
+   [Groq] "Full Stack Developer" → ✅ relevant
+   [Groq] "Senior Smart City / ICT / Security Systems Engineer" → ❌ not relevant
+   [Groq] "Software Engineer" → ✅ relevant
+   [Groq] "IT Analyst" → ❌ not relevant
+   [Groq] "AI-native Software Developer Intern" → ❌ not relevant
+   [Groq] "DevOps Engineer" → ❌ not relevant
+   [Groq] "Lead Frontend Developer (React)" → ✅ relevant
+   [Groq] "Senior Application Support Engineer" → ❌ not relevant
+   [Groq] "Sailpoint Developer(ISC/IIQ)" → ✅ relevant
+   [Groq] "IT Recruiter – Product & Technology Hiring" → ❌ not relevant
+   [Groq] "Quality Assurance Tester" → ❌ not relevant
+   [Groq] "Application Support Engineer" → ❌ not relevant
+   [Groq] "Senior Network Security Engineer - R&S ,Firewall (ASA,Plaoalto,Firepower) Loadbalance" → ❌ not relevant
+   [Groq] "Smart Automations Platform Engineer" → ❌ not relevant
+   [Groq] "PC Building Specilaist Cum Sales Lead" → ❌ not relevant
+   [Groq] "Dot Net Developer" → ❌ not relevant
+   [Groq] "Fullstack Engineer" → ✅ relevant
+   [Groq] "AgentOps & DevSecOps Engineer" → ✅ relevant
+   [Groq] "Robotics/Coding STEM Trainer" → ❌ not relevant
+   [Groq] "Robotics & Coding STEM Trainer" → ❌ not relevant
+   [Groq] "Software Trainer" → ❌ not relevant
+   [Groq] "Software Developer" → ✅ relevant
+   [Groq] "Trainee Engineer" → ✅ relevant
+   [Groq] "Software Developer" → ✅ relevant
+   [Groq] "IT Recruiter/Technical Recruitment" → ❌ not relevant
+   [Groq] "Senior Full Stack Developer" → ✅ relevant
+   [Groq] "Game Developer" → ❌ not relevant
+   [Groq] "Internet of Things (IoT) Trainee" → ✅ relevant
+   [Groq] "VoIP Engineer" → ✅ relevant
+   [Groq] "ITX Developer" → ✅ relevant
+   [Groq] "Sales Executive (Fresher)" → ❌ not relevant
+   [Groq] "Infrastructure Administrator" → ❌ not relevant
+   [Groq] "Oracle Insurance Policy Administration (OIPA)" → ✅ relevant
+   [Groq] "TWS Consultants" → ❌ not relevant
+   [Groq] "Data Engineer" → ❌ not relevant
+   [Groq] "Backend Engineer" → ✅ relevant
+   [Groq] "Frontend Engineer" → ✅ relevant
+   [Groq] "Back End Developer" → ✅ relevant
+✅ [User] 37 jobs after filter
+✅ Stored 37 jobs for jid_1ccd3f69-1ae9-4252-95a3-3a444df23a91
+Registering user in DB
+Registering user in DB

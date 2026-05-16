@@ -47,7 +47,7 @@ export function JobsFeed() {
       (requirement) => requirement.job_req_id === activeRequirementId,
     );
 
-    if (!requirementExists) {
+    if (!activeRequirementId || !requirementExists) {
       setActiveRequirementId(requirements[0].job_req_id);
     }
   }, [requirements, activeRequirementId]);
@@ -116,7 +116,11 @@ export function JobsFeed() {
           </p>
         </div>
 
-        <CreateJobRequirementDialog />
+        <CreateJobRequirementDialog
+          onCreated={(requirementId) => {
+            setActiveRequirementId(requirementId);
+          }}
+        />
       </div>
 
       {/* Empty State */}

@@ -36,14 +36,14 @@ export const createJobRequirementService = async ({
     jobReqId,
   });
 
-  console.log("Scraping on Hold for Development Purposes");
-  // runScrapeForJob(jobReqId)
-  //   .catch((err) =>
-  //     console.error(
-  //       "❌ Scrape failed:",
-  //       err
-  //     )
-  //   );
+  // console.log("Scraping on Hold for Development Purposes");
+  runScrapeForJob(jobReqId)
+    .catch((err) =>
+      console.error(
+        "❌ Scrape failed:",
+        err
+      )
+    );
 
   return requirement;
 };
