@@ -14,6 +14,8 @@ import { JobFeedSkeleton } from "@/features/job-updates/components/job-feed-skel
 
 import { JobRequirementTabsSkeleton } from "@/features/job-requirements/components/job-requirement-tabs-skeleton";
 
+import { groupJobUpdates } from "@/features/job-updates/utils/group-job-updates";
+
 export function JobsFeed() {
   const { data: requirementsData, isLoading: isRequirementsLoading } =
     useJobRequirements();
@@ -52,6 +54,7 @@ export function JobsFeed() {
     useJobUpdates(activeRequirementId);
 
   const updates = updatesData?.data || [];
+  const groupedUpdates = groupJobUpdates(updates);
 
   if (isRequirementsLoading) {
     return (
@@ -116,41 +119,55 @@ export function JobsFeed() {
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
-              {updates.map((job) => (
-                <article
-                  key={job.id}
-                  className="rounded-2xl border border-border p-5 transition-colors hover:border-muted-foreground/30"
-                >
-                  <div className="mb-3 flex items-start justify-between gap-4">
-                    <div>
-                      <h2 className="text-base font-semibold">
-                        {job.job_title}
-                      </h2>
+            <div className="space-y-8">
+              {groupedUpdates.map((group) => (
+                <section key={group.label}>
+                  <div className="mb-4 flex items-center gap-3">
+                    <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                      {group.label}
+                    </h2>
 
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {job.company}
-                      </p>
-                    </div>
-
-                    <span className="rounded-full border border-border px-2 py-1 text-xs text-muted-foreground">
-                      {job.job_provider}
-                    </span>
+                    <div className="h-px flex-1 bg-border" />
                   </div>
 
-                  <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
-                    <span>{job.job_location}</span>
-                  </div>
+                  <div className="space-y-4">
+                    {group.jobs.map((job) => (
+                      <article
+                        key={job.id}
+                        className="rounded-2xl border border-border p-5 transition-colors hover:border-muted-foreground/30"
+                      >
+                        <div className="mb-3 flex items-start justify-between gap-4">
+                          <div>
+                            <h2 className="text-base font-semibold">
+                              {job.job_title}
+                            </h2>
 
-                  <a
-                    href={job.job_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sm font-medium text-foreground underline underline-offset-4"
-                  >
-                    View Job
-                  </a>
-                </article>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              {job.company}
+                            </p>
+                          </div>
+
+                          <span className="rounded-full border border-border px-2 py-1 text-xs text-muted-foreground">
+                            {job.job_provider}
+                          </span>
+                        </div>
+
+                        <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
+                          <span>{job.job_location}</span>
+                        </div>
+
+                        <a
+                          href={job.job_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-sm font-medium text-foreground underline underline-offset-4"
+                        >
+                          View Job
+                        </a>
+                      </article>
+                    ))}
+                  </div>
+                </section>
               ))}
             </div>
           )}

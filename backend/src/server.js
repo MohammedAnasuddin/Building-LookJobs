@@ -8,8 +8,6 @@ import jobRequirementRoutes from "./routes/jobRequirement.route.js";
 import jobUpdateRoutes from "./routes/jobUpdate.route.js";
 import demoRoutes from "./routes/demo.routes.js";
 
-
-
 import "./cron/scraper.cron.js";
 
 dotenv.config();
@@ -17,9 +15,11 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "*"
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "*",
+  }),
+);
 app.use(express.json());
 
 // Routes
@@ -27,7 +27,7 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/demo", demoRoutes);
 app.use("/api/job-requirements", jobRequirementRoutes);
-app.use("/api/job-updates",jobUpdateRoutes);
+app.use("/api/job-updates", jobUpdateRoutes);
 
 // Health check
 app.get("/", (req, res) => {
