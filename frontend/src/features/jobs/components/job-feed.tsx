@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { Search } from "lucide-react";
+import { Bookmark, BookmarkCheck, Search } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
+
+import { Button } from "@/components/ui/button";
 
 import { CreateJobRequirementDialog } from "@/features/job-requirements/components/create-job-requirement-dialog";
 
@@ -19,6 +21,10 @@ import { JobFeedSkeleton } from "@/features/job-updates/components/job-feed-skel
 import { JobRequirementTabsSkeleton } from "@/features/job-requirements/components/job-requirement-tabs-skeleton";
 
 import { groupJobUpdates } from "@/features/job-updates/utils/group-job-updates";
+
+import { useBookmarks } from "@/features/bookmarks/hooks/use-bookmarks";
+
+import { useToggleBookmark } from "@/features/bookmarks/hooks/use-toggle-bookmark";
 
 export function JobsFeed() {
   const { data: requirementsData, isLoading: isRequirementsLoading } =
@@ -72,6 +78,12 @@ export function JobsFeed() {
 
   const groupedUpdates = groupJobUpdates(filteredUpdates);
 
+  const { data: bookmarksData } = useBookmarks();
+
+  const bookmarks = bookmarksData?.data || [];
+
+  const { mutate: toggleBookmark } = useToggleBookmark();
+
   if (isRequirementsLoading) {
     return (
       <div className="space-y-6">
@@ -93,7 +105,7 @@ export function JobsFeed() {
   }
 
   return (
-    <div className="space-y-6 ">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div>
@@ -159,41 +171,67 @@ export function JobsFeed() {
                   </div>
 
                   <div className="space-y-4">
-                    {group.jobs.map((job) => (
-                      <article
-                        key={job.id}
-                        className="rounded-2xl border border-border p-5 transition-colors hover:border-muted-foreground/30"
-                      >
-                        <div className="mb-3 flex items-start justify-between gap-4">
-                          <div>
-                            <h2 className="text-base font-semibold">
-                              {job.job_title}
-                            </h2>
+                    {group.jobs.map((job) => {
+                      const isBookmarked = bookmarks.some(
+                        (bookmark: any) => bookmark.job_update_id === job.id,
+                      );
 
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              {job.company}
-                            </p>
+                      return (
+                        <article
+                          key={job.id}
+                          className="rounded-2xl border border-border p-5 transition-colors hover:border-muted-foreground/30"
+                        >
+                          <div className="mb-3 flex items-start justify-between gap-4">
+                            <div>
+                              <h2 className="text-base font-semibold">
+                                {job.job_title}
+                              </h2>
+
+                              <p className="mt-1 text-sm text-muted-foreground">
+                                {job.company}
+                              </p>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <span className="rounded-full border border-border px-2 py-1 text-xs text-muted-foreground">
+                                {job.job_provider}
+                              </span>
+
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-8 w-8 rounded-full"
+                                onClick={() =>
+                                  toggleBookmark({
+                                    jobId: job.id,
+                                    isBookmarked,
+                                  })
+                                }
+                              >
+                                {isBookmarked ? (
+                                  <BookmarkCheck className="h-4 w-4" />
+                                ) : (
+                                  <Bookmark className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
                           </div>
 
-                          <span className="rounded-full border border-border px-2 py-1 text-xs text-muted-foreground">
-                            {job.job_provider}
-                          </span>
-                        </div>
+                          <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
+                            <span>{job.job_location}</span>
+                          </div>
 
-                        <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>{job.job_location}</span>
-                        </div>
-
-                        <a
-                          href={job.job_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-sm font-medium text-foreground underline underline-offset-4"
-                        >
-                          View Job
-                        </a>
-                      </article>
-                    ))}
+                          <a
+                            href={job.job_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-sm font-medium text-foreground underline underline-offset-4"
+                          >
+                            View Job
+                          </a>
+                        </article>
+                      );
+                    })}
                   </div>
                 </section>
               ))}
