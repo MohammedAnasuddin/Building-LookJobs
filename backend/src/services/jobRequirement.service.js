@@ -11,42 +11,67 @@ export const getUserJobRequirementsService = async (userId) => {
 
 import { v4 as uuidv4 } from "uuid";
 
-export const createJobRequirementService = async ({
-  userId,
-  job_title,
-  location,
-  is_remote,
-  is_intern,
-  is_fresher,
-}) => {
-  const jobReqId = `jid_${uuidv4()}`;
-
-  const requirement = await createJobRequirement({
-    jobReqId,
+export const createJobRequirementService =
+  async ({
     userId,
     job_title,
     location,
     is_remote,
     is_intern,
     is_fresher,
-  });
+  }) => {
 
-  await appendJobReqToUser({
-    userId,
-    jobReqId,
-  });
+    const jobReqId =
+      `jid_${uuidv4()}`;
 
-  // console.log("Scraping on Hold for Development Purposes");
-  runScrapeForJob(jobReqId)
-    .catch((err) =>
-      console.error(
-        "❌ Scrape failed:",
-        err
-      )
-    );
+    // =========================
+    // CREATE REQUIREMENT
+    // =========================
 
-  return requirement;
-};
+    const requirement =
+      await createJobRequirement({
+        jobReqId,
+        userId,
+        job_title,
+        location,
+        is_remote,
+        is_intern,
+        is_fresher,
+      });
+
+    // =========================
+    // CACHE JID IN USER
+    // =========================
+
+    await appendJobReqToUser({
+      userId,
+      jobReqId,
+    });
+
+    // =========================
+    // START ASYNC SCRAPE
+    // =========================
+
+    runScrapeForJob(jobReqId)
+      .catch((err) =>
+        console.error(
+          `❌ Scrape failed for ${jobReqId}:`,
+          err
+        )
+      );
+
+    // =========================
+    // RETURN REQUIREMENT
+    // =========================
+
+    return {
+      ...requirement,
+
+      scrape_status:
+        requirement.scrape_status ||
+        "pending",
+    };
+  };
 
 
 

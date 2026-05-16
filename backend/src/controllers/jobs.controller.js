@@ -20,22 +20,29 @@ export const getJobUpdates = async (req, res) => {
   }
 };
 
-
-
-
 export const createJob = async (req, res) => {
-  const userId = req.user.sub; 
+  const userId = req.user.sub;
+
   const jobData = req.body;
 
-  // 🔥 VALIDATION HERE
+  // =========================
+  // VALIDATION
+  // =========================
+
   const error = validateJob(jobData);
 
   if (error) {
-    return res.status(400).json({ message: error });
+    return res.status(400).json({
+      success: false,
+      message: error,
+    });
   }
 
   if (!userId) {
-    return res.status(400).json({ message: "User ID required" });
+    return res.status(400).json({
+      success: false,
+      message: "User ID required",
+    });
   }
 
   try {
@@ -43,13 +50,28 @@ export const createJob = async (req, res) => {
 
     if (result.success) {
       return res.status(201).json({
-        message: "Job added successfully!",
-        jobId: result.jobId,
+        success: true,
+
+        message: "Job requirement created",
+
+        data: {
+          job_req_id: result.jobReqId,
+
+          scrape_status: "pending",
+        },
       });
     }
 
-    return res.status(500).json({ message: result.error });
+    return res.status(500).json({
+      success: false,
+      message: result.error,
+    });
   } catch (err) {
-    return res.status(500).json({ message: "Error creating job" });
+    console.error("❌ Create job error:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: "Error creating job",
+    });
   }
 };
