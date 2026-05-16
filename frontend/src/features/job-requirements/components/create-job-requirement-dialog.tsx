@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 
@@ -45,16 +45,15 @@ type FormValues = z.infer<typeof schema>;
 
 type CreateJobRequirementDialogProps = {
   onCreated?: (requirementId: string) => void;
+
+  shouldClose?: boolean;
 };
 
 export function CreateJobRequirementDialog({
   onCreated,
+  shouldClose,
 }: CreateJobRequirementDialogProps) {
   const [open, setOpen] = useState(false);
-
-  const [progress, setProgress] = useState(0);
-
-  const [statusText, setStatusText] = useState("");
 
   const { mutateAsync, isPending } = useCreateJobRequirement();
 
@@ -75,52 +74,31 @@ export function CreateJobRequirementDialog({
       },
     });
 
+  useEffect(() => {
+    if (shouldClose) {
+      setOpen(false);
+
+      reset();
+    }
+  }, [shouldClose, reset]);
+
   async function onSubmit(values: FormValues) {
     try {
-      setProgress(20);
-
-      setStatusText("Creating requirement...");
-
-      await new Promise((resolve) => setTimeout(resolve, 400));
-
-      setProgress(45);
-
-      setStatusText("Starting scraper...");
-
       const result = await mutateAsync(values);
+
+      console.log("CREATE RESULT:", result);
 
       const requirement = result.data;
 
       onCreated?.(requirement.job_req_id);
 
-      setProgress(80);
-
-      setStatusText("Preparing feed...");
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      setProgress(100);
-
-      setStatusText("Done");
-
-      await new Promise((resolve) => setTimeout(resolve, 300));
-
       reset();
-
-      setProgress(0);
-
-      setStatusText("");
 
       setOpen(false);
     } catch (error) {
       console.error(error);
-
-      setProgress(0);
-
-      setStatusText("");
     }
   }
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -143,19 +121,28 @@ export function CreateJobRequirementDialog({
           <div className="space-y-2">
             <Label>Job Title</Label>
 
-            <Input placeholder="Frontend Engineer" {...register("job_title")} />
+            <Input
+              placeholder="Frontend Engineer"
+              disabled={isPending}
+              {...register("job_title")}
+            />
           </div>
 
           <div className="space-y-2">
             <Label>Location</Label>
 
-            <Input placeholder="Remote" {...register("location")} />
+            <Input
+              placeholder="Remote"
+              disabled={isPending}
+              {...register("location")}
+            />
           </div>
 
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <Checkbox
                 checked={watch("is_remote")}
+                disabled={isPending}
                 onCheckedChange={(checked) => setValue("is_remote", !!checked)}
               />
 
@@ -165,6 +152,7 @@ export function CreateJobRequirementDialog({
             <div className="flex items-center gap-3">
               <Checkbox
                 checked={watch("is_fresher")}
+                disabled={isPending}
                 onCheckedChange={(checked) => setValue("is_fresher", !!checked)}
               />
 
@@ -174,6 +162,7 @@ export function CreateJobRequirementDialog({
             <div className="flex items-center gap-3">
               <Checkbox
                 checked={watch("is_intern")}
+                disabled={isPending}
                 onCheckedChange={(checked) => setValue("is_intern", !!checked)}
               />
 
@@ -182,19 +171,19 @@ export function CreateJobRequirementDialog({
           </div>
 
           {isPending && (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>{statusText}</span>
-
-                <span>{progress}%</span>
+            <div className="space-y-3">
+              <div className="rounded-xl border border-border p-4">
+                <p className="text-sm text-muted-foreground">
+                  Creating requirement and starting scraper...
+                </p>
               </div>
 
-              <Progress value={progress} />
+              <Progress value={65} className="animate-pulse" />
             </div>
           )}
 
           <Button type="submit" disabled={isPending} className="w-full">
-            {isPending ? "Creating..." : "Create Requirement"}
+            {isPending ? "Starting..." : "Create Requirement"}
           </Button>
         </form>
       </DialogContent>

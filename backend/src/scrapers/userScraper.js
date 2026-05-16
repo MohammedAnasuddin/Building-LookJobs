@@ -5,38 +5,34 @@ puppeteer.use(StealthPlugin());
 
 import pool from "../db/db_setup.js";
 
-import { storeResults }
-from "../services/jobStorage.service.js";
+import { storeResults } from "../services/jobStorage.service.js";
 
-import { runPlatformScraping }
-from "./coreEngine.js";
+import { runPlatformScraping } from "./coreEngine.js";
 
-import { filterRelevantJobs }
-from "../utils/relevanceFilter.js";
+import { filterRelevantJobs } from "../utils/relevanceFilter.js";
 
-export async function runScrapeForJob(
-  jobReqId
-) {
-
-  console.log(
-    `🚀 [User] Scraping ${jobReqId}`
-  );
+export async function runScrapeForJob(jobReqId) {
+  console.log(`🚀 [User] Scraping ${jobReqId}`);
 
   let browser;
 
   try {
-
     // =========================
     // MARK AS SCRAPING
     // =========================
 
     await pool.query(
       `
-      UPDATE job_requirements
-      SET scrape_status = 'scraping'
-      WHERE job_req_id = $1
-      `,
-      [jobReqId]
+  UPDATE job_requirements
+
+  SET
+    scrape_status = 'scraping',
+    scrape_stage = 'scraping_jobs',
+    progress = 25
+
+  WHERE job_req_id = $1
+  `,
+      [jobReqId],
     );
 
     // =========================
@@ -49,7 +45,7 @@ export async function runScrapeForJob(
       FROM job_requirements
       WHERE job_req_id = $1
       `,
-      [jobReqId]
+      [jobReqId],
     );
 
     if (rows.length === 0) {
@@ -70,41 +66,49 @@ export async function runScrapeForJob(
     // SCRAPE
     // =========================
 
-    const results =
-      await runPlatformScraping(
-        browser,
-        [requirement]
-      );
+    const results = await runPlatformScraping(browser, [requirement]);
 
-    const jobs =
-      results[jobReqId] || [];
+    const jobs = results[jobReqId] || [];
 
-    console.log(
-      `📊 ${jobs.length} jobs scraped`
-    );
+    console.log(`📊 ${jobs.length} jobs scraped`);
 
     // =========================
     // AI FILTER
     // =========================
+    await pool.query(
+      `UPDATE job_requirements
 
-    const filtered =
-      await filterRelevantJobs(
-        jobs,
-        requirement
-      );
+  SET
+    scrape_stage = 'ai_filtering',
+    progress = 60
 
-    console.log(
-      `✅ ${filtered.length} jobs after filter`
+  WHERE job_req_id = $1
+  `,
+      [jobReqId],
     );
+
+    const filtered = await filterRelevantJobs(jobs, requirement);
+
+    console.log(`✅ ${filtered.length} jobs after filter`);
 
     // =========================
     // STORE
     // =========================
 
-    await storeResults(
-      jobReqId,
-      filtered
+    await pool.query(
+      `
+  UPDATE job_requirements
+
+  SET
+    scrape_stage = 'saving_jobs',
+    progress = 85
+
+  WHERE job_req_id = $1
+  `,
+      [jobReqId],
     );
+
+    await storeResults(jobReqId, filtered);
 
     // =========================
     // MARK SUCCESS
@@ -112,26 +116,27 @@ export async function runScrapeForJob(
 
     await pool.query(
       `
-      UPDATE job_requirements
-      SET
-        scrape_status = 'completed',
-        last_scraped_at = NOW(),
-        last_scrape_error = NULL
-      WHERE job_req_id = $1
-      `,
-      [jobReqId]
+  UPDATE job_requirements
+
+  SET
+    scrape_status = 'completed',
+
+    scrape_stage = 'completed',
+
+    progress = 100,
+
+    last_scraped_at = NOW(),
+
+    last_scrape_error = NULL
+
+  WHERE job_req_id = $1
+  `,
+      [jobReqId],
     );
 
-    console.log(
-      `🎉 Scrape completed for ${jobReqId}`
-    );
-
+    console.log(`🎉 Scrape completed for ${jobReqId}`);
   } catch (err) {
-
-    console.error(
-      "❌ Scrape failed:",
-      err
-    );
+    console.error("❌ Scrape failed:", err);
 
     // =========================
     // MARK FAILED
@@ -139,17 +144,22 @@ export async function runScrapeForJob(
 
     await pool.query(
       `
-      UPDATE job_requirements
-      SET
-        scrape_status = 'failed',
-        last_scrape_error = $2
-      WHERE job_req_id = $1
-      `,
-      [jobReqId, err.message]
+  UPDATE job_requirements
+
+  SET
+    scrape_status = 'failed',
+
+    scrape_stage = 'failed',
+
+    progress = 0,
+
+    last_scrape_error = $2
+
+  WHERE job_req_id = $1
+  `,
+      [jobReqId, err.message],
     );
-
   } finally {
-
     // =========================
     // ALWAYS CLOSE BROWSER
     // =========================

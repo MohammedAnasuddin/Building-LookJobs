@@ -26,11 +26,16 @@ import { useBookmarks } from "@/features/bookmarks/hooks/use-bookmarks";
 
 import { useToggleBookmark } from "@/features/bookmarks/hooks/use-toggle-bookmark";
 
+import { Progress } from "@/components/ui/progress";
+
+import { SCRAPE_STAGE_CONFIG } from "@/features/job-updates/constants/scrape-stage-config";
+
 export function JobsFeed() {
   const { data: requirementsData, isLoading: isRequirementsLoading } =
     useJobRequirements();
 
   const requirements = requirementsData?.data || [];
+  console.log("REQUIREMENTS:", requirements);
 
   const [activeRequirementId, setActiveRequirementId] = useState<string | null>(
     () => {
@@ -38,16 +43,15 @@ export function JobsFeed() {
     },
   );
 
+  console.log("ACTIVE REQUIREMENT:", activeRequirementId);
+
   useEffect(() => {
     if (requirements.length === 0) {
       return;
     }
 
-    const requirementExists = requirements.some(
-      (requirement) => requirement.job_req_id === activeRequirementId,
-    );
-
-    if (!activeRequirementId || !requirementExists) {
+    // only initialize once
+    if (activeRequirementId === null) {
       setActiveRequirementId(requirements[0].job_req_id);
     }
   }, [requirements, activeRequirementId]);
@@ -64,6 +68,19 @@ export function JobsFeed() {
     useJobUpdates(activeRequirementId);
 
   const updates = updatesData?.data || [];
+
+  const scrapeStatus = updatesData?.scrape_status;
+
+  const stage = updatesData?.scrape_stage || "pending";
+
+  const progress = updatesData?.progress || 10;
+
+  const stageConfig = SCRAPE_STAGE_CONFIG[
+    stage as keyof typeof SCRAPE_STAGE_CONFIG
+  ] || {
+    label: "Preparing your feed...",
+    progress: 10,
+  };
 
   const [search, setSearch] = useState("");
 
@@ -83,6 +100,21 @@ export function JobsFeed() {
   const bookmarks = bookmarksData?.data || [];
 
   const { mutate: toggleBookmark } = useToggleBookmark();
+
+  const isScraping = scrapeStatus === "pending" || scrapeStatus === "scraping";
+
+  console.log({
+    scrapeStatus,
+    stage,
+    updatesData,
+  });
+
+  console.log({
+    scrapeStatus,
+    groupedUpdates,
+    groupedLength: groupedUpdates.length,
+    updates,
+  });
 
   if (isRequirementsLoading) {
     return (
@@ -118,12 +150,14 @@ export function JobsFeed() {
 
         <CreateJobRequirementDialog
           onCreated={(requirementId) => {
-            setActiveRequirementId(requirementId);
+            setTimeout(() => {
+              setActiveRequirementId(requirementId);
+            }, 0);
           }}
         />
       </div>
 
-      {/* Empty State */}
+      {/* Empty Requirements */}
       {requirements.length === 0 ? (
         <div className="rounded-2xl border border-border p-6">
           <h2 className="mb-2 text-lg font-semibold">No tracked jobs yet</h2>
@@ -153,16 +187,77 @@ export function JobsFeed() {
             />
           </div>
 
-          {/* Feed */}
-          {isUpdatesLoading ? (
+          {/* Scraping State */}
+          {isScraping && (
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+              <div className="mb-5 flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-lg font-semibold tracking-tight">
+                    {stageConfig.label}
+                  </h2>
+
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Your personalized job feed is being prepared.
+                  </p>
+                </div>
+
+                <div className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+                  {progress}%
+                </div>
+              </div>
+
+              <div className="overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-2 rounded-full bg-foreground transition-all duration-700"
+                  style={{
+                    width: `${progress}%`,
+                  }}
+                />
+              </div>
+
+              <div className="mt-6 space-y-3">
+                <div className="h-4 w-2/3 animate-pulse rounded-full bg-muted" />
+
+                <div className="h-4 w-1/2 animate-pulse rounded-full bg-muted" />
+
+                <div className="h-4 w-1/3 animate-pulse rounded-full bg-muted" />
+              </div>
+            </div>
+          )}
+
+          {/* Feed Loading State */}
+          {!isScraping && isUpdatesLoading && !updatesData && (
             <JobFeedSkeleton />
-          ) : groupedUpdates.length === 0 ? (
+          )}
+
+          {/* Failed State */}
+          {scrapeStatus === "failed" && (
             <div className="rounded-2xl border border-border p-6">
+              <h2 className="mb-2 text-lg font-semibold">
+                Failed to fetch jobs
+              </h2>
+
               <p className="text-sm text-muted-foreground">
-                No jobs found for this search.
+                Please try again later.
               </p>
             </div>
-          ) : (
+          )}
+
+          {/* Empty Feed */}
+          {scrapeStatus === "completed" && groupedUpdates.length === 0 && (
+            <div className="rounded-2xl border border-border p-6">
+              <h2 className="mb-2 text-lg font-semibold">
+                No matching jobs found yet
+              </h2>
+
+              <p className="text-sm text-muted-foreground">
+                Try updating your job requirement or check again later.
+              </p>
+            </div>
+          )}
+
+          {/* Feed */}
+          {scrapeStatus === "completed" && groupedUpdates.length > 0 && (
             <div className="space-y-8">
               {groupedUpdates.map((group) => (
                 <section key={group.label}>

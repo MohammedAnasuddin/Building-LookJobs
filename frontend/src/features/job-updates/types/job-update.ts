@@ -12,4 +12,13 @@ export type JobUpdate = {
   job_url: string;
 
   added_on: string;
+
+  
 };
+
+
+export type ScrapeStatus =
+  | "pending"
+  | "scraping"
+  | "completed"
+  | "failed"

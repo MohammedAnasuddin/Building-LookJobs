@@ -36,6 +36,11 @@ export function JobRequirementTabs({
   return (
     <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
       {requirements.map((requirement) => {
+        console.log({
+          activeRequirementId,
+          requirementId: requirement.job_req_id,
+        });
+
         const isActive = activeRequirementId === requirement.job_req_id;
 
         return (
