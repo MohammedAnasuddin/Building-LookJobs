@@ -68,7 +68,7 @@ export function CreateJobRequirementDialog({
 
         is_remote: true,
 
-        is_fresher: true,
+        is_fresher: false,
 
         is_intern: false,
       },
