@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { addBookmark } from "../api/add-bookmark";
-
 import { removeBookmark } from "../api/remove-bookmark";
 
 type ToggleBookmarkInput = {
@@ -14,7 +14,7 @@ export function useToggleBookmark() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ jobId, isBookmarked }: ToggleBookmarkInput) => {
+    mutationFn: ({ jobId, isBookmarked }: ToggleBookmarkInput) => {
       if (isBookmarked) {
         return removeBookmark(jobId);
       }

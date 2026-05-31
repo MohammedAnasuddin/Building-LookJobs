@@ -29,6 +29,7 @@ import { useToggleBookmark } from "@/features/bookmarks/hooks/use-toggle-bookmar
 import { Progress } from "@/components/ui/progress";
 
 import { SCRAPE_STAGE_CONFIG } from "@/features/job-updates/constants/scrape-stage-config";
+import { JobCard } from "./job-card";
 
 export function JobsFeed() {
   const { data: requirementsData, isLoading: isRequirementsLoading } =
@@ -124,7 +125,9 @@ export function JobsFeed() {
 
   const { data: bookmarksData } = useBookmarks();
 
-  const bookmarks = bookmarksData?.data || [];
+  const bookmarkedIds = new Set(
+    (bookmarksData?.data ?? []).map((bookmark) => bookmark.id),
+  );
 
   const { mutate: toggleBookmark } = useToggleBookmark();
 
@@ -295,64 +298,41 @@ export function JobsFeed() {
 
                   <div className="space-y-4">
                     {group.jobs.map((job) => {
-                      const isBookmarked = bookmarks.some(
-                        (bookmark: any) => bookmark.job_update_id === job.id,
-                      );
+                      const isBookmarked = bookmarkedIds.has(job.id);
 
                       return (
-                        <article
+                        <JobCard
                           key={job.id}
-                          className="rounded-2xl border border-border p-5 transition-colors hover:border-muted-foreground/30"
-                        >
-                          <div className="mb-3 flex items-start justify-between gap-4">
-                            <div>
-                              <h2 className="text-base font-semibold">
-                                {job.job_title}
-                              </h2>
+                          job={{
+                            id: String(job.id),
 
-                              <p className="mt-1 text-sm text-muted-foreground">
-                                {job.company}
-                              </p>
-                            </div>
+                            title: job.job_title,
 
-                            <div className="flex items-center gap-2">
-                              <span className="rounded-full border border-border px-2 py-1 text-xs text-muted-foreground">
-                                {job.job_provider}
-                              </span>
+                            company: job.company,
 
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                className="h-8 w-8 rounded-full"
-                                onClick={() =>
-                                  toggleBookmark({
-                                    jobId: job.id,
-                                    isBookmarked,
-                                  })
-                                }
-                              >
-                                {isBookmarked ? (
-                                  <BookmarkCheck className="h-4 w-4" />
-                                ) : (
-                                  <Bookmark className="h-4 w-4" />
-                                )}
-                              </Button>
-                            </div>
-                          </div>
+                            source: job.job_provider,
 
-                          <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
-                            <span>{job.job_location}</span>
-                          </div>
+                            postedAt: group.label,
 
-                          <a
-                            href={job.job_url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-sm font-medium text-foreground underline underline-offset-4"
-                          >
-                            View Job
-                          </a>
-                        </article>
+                            dayGroup: "today",
+
+                            applyUrl: job.job_url,
+
+                            isRemote:
+                              job.job_location
+                                ?.toLowerCase()
+                                .includes("remote") ?? false,
+
+                            isFresher: false,
+                          }}
+                          isBookmarked={isBookmarked}
+                          onToggleBookmark={() =>
+                            toggleBookmark({
+                              jobId: job.id,
+                              isBookmarked,
+                            })
+                          }
+                        />
                       );
                     })}
                   </div>

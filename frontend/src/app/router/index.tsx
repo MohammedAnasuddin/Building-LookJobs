@@ -1,10 +1,10 @@
-import { createBrowserRouter } from "react-router-dom"
+import { createBrowserRouter } from "react-router-dom";
 
-import { AppLayout } from "../layouts/app-layout"
+import { AppLayout } from "../layouts/app-layout";
 
-import { HomePage } from "@/pages/home-page"
-import { BookmarksPage } from "@/pages/bookmarks-page"
-import { ProfilePage } from "@/pages/profile-page"
+import { HomePage } from "@/pages/home-page";
+import { ProfilePage } from "@/pages/profile-page";
+import { BookmarksPage } from "@/pages/bookmarks-page";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +23,11 @@ export const router = createBrowserRouter([
         path: "profile",
         element: <ProfilePage />,
       },
+      {
+        path: "/bookmarks",
+
+        element: <BookmarksPage />,
+      },
     ],
   },
-])
+]);

@@ -54,8 +54,12 @@ export const getBookmarks = async (userId) => {
     `
     SELECT
       b.id AS bookmark_id,
+      b.created_at AS bookmarked_at,
 
-      jud.id,
+      jr.job_req_id,
+      jr.job_title AS requirement_title,
+
+      jud.id AS job_update_id,
       jud.job_title,
       jud.company,
       jud.job_provider,
@@ -66,7 +70,10 @@ export const getBookmarks = async (userId) => {
     FROM bookmarks b
 
     JOIN job_update_details jud
-    ON b.job_update_id = jud.id
+      ON b.job_update_id = jud.id
+
+    JOIN job_requirements jr
+      ON jud.job_req_id = jr.job_req_id
 
     WHERE b.user_id = $1
 

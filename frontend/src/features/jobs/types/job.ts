@@ -10,5 +10,5 @@ export interface Job {
 
   applyUrl: string;
 
-  dayGroup: "today" | "yesterday" | "week"
+  
 }
