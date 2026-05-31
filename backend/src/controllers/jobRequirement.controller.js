@@ -51,6 +51,12 @@ export const createJobRequirementController = async (req, res) => {
   } catch (error) {
     console.error("❌ Error creating requirement:", error);
 
+    if (error.message === "Maximum 3 job requirements allowed") {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
     return res.status(500).json({
       success: false,
       message: "Failed to create requirement",

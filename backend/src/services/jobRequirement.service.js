@@ -10,6 +10,14 @@ export const getUserJobRequirementsService = async (userId) => {
 };
 
 import { v4 as uuidv4 } from "uuid";
+const requirements =
+  await getJobRequirementsByUserId(userId);
+
+if (requirements.length >3 ) {
+  throw new Error(
+    "Maximum 3 job requirements allowed"
+  );
+}
 
 export const createJobRequirementService =
   async ({

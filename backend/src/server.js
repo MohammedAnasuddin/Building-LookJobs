@@ -10,6 +10,7 @@ import demoRoutes from "./routes/demo.routes.js";
 import bookmarkRoutes from "./routes/bookmark.route.js";
 
 import "./cron/scraper.cron.js";
+import { healthController } from "./controllers/health.controller.js";
 
 dotenv.config();
 
@@ -24,9 +25,9 @@ app.use(
 app.use(express.json());
 
 // Routes
+app.get("/health", healthController);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/user", userRoutes);
-app.use("/api/demo", demoRoutes);
 app.use("/api/job-requirements", jobRequirementRoutes);
 app.use("/api/job-updates", jobUpdateRoutes);
 app.use("/api/bookmarks", bookmarkRoutes);
