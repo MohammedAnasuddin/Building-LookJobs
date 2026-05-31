@@ -16,7 +16,9 @@
     "titleBar.activeBackground": "#215732",
     "titleBar.activeForeground": "#e7e7e7",
     "titleBar.inactiveBackground": "#21573299",
-    "titleBar.inactiveForeground": "#e7e7e799"
+    "titleBar.inactiveForeground": "#e7e7e799",
+    "editorGroup.border": "#2f7c47",
+    "tab.activeBorder": "#2f7c47"
   },
   "snyk.advanced.autoSelectOrganization": true,
   "peacock.color": "#215732",

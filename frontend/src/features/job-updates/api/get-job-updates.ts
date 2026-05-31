@@ -22,7 +22,7 @@ type JobUpdatesResponse = {
 // }
 
 export async function getJobUpdates(jobReqId: string) {
-  console.log("API CALLING:", `/job-updates/${jobReqId}`);
+  // console.log("API CALLING:", `/job-updates/${jobReqId}`);
 
   return apiClient(`/job-updates/${jobReqId}`, {
     auth: true,

@@ -7,7 +7,15 @@ export function AppLayout() {
   const { loginWithRedirect, logout, isAuthenticated, getAccessTokenSilently } =
     useAuth0();
 
-  useAuthBootstrap();
+  const { isBootstrapped } = useAuthBootstrap();
+
+  if (isAuthenticated && !isBootstrapped) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-muted border-t-foreground" />
+      </div>
+    );
+  }
 
   return (
     <AuthGate>
@@ -18,7 +26,7 @@ export function AppLayout() {
             <h1 className="text-sm font-semibold tracking-tight">LookJobs</h1>
 
             <div className="hidden items-center gap-4 md:flex">
-              {isAuthenticated && (
+              {/* {isAuthenticated && (
                 <button
                   onClick={async () => {
                     const token = await getAccessTokenSilently();
@@ -28,8 +36,8 @@ export function AppLayout() {
                   className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   Get Token
-                </button>
-              )}
+                </button> 
+              )} */}
 
               {isAuthenticated ? (
                 <button

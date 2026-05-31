@@ -1,18 +1,16 @@
-import { apiClient } from "@/shared/lib/api-client"
+import { apiClient } from "@/shared/lib/api-client";
 
-import type { JobRequirement } from "../types/job-requirement"
+import type { JobRequirement } from "../types/job-requirement";
 
 type JobRequirementsResponse = {
-  success: boolean
+  success: boolean;
 
-  data: JobRequirement[]
-}
+  data: JobRequirement[];
+};
 
 export async function getJobRequirements() {
-  return apiClient<JobRequirementsResponse>(
-    "/job-requirements",
-    {
-      auth: true,
-    }
-  )
+  console.log("FETCHING REQUIREMENTS");
+  return apiClient<JobRequirementsResponse>("/job-requirements", {
+    auth: true,
+  });
 }

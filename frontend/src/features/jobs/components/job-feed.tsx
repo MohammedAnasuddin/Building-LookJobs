@@ -43,7 +43,7 @@ export function JobsFeed() {
     },
   );
 
-  console.log("ACTIVE REQUIREMENT:", activeRequirementId);
+  // console.log("ACTIVE REQUIREMENT:", activeRequirementId);
 
   useEffect(() => {
     if (requirements.length === 0) {
@@ -75,11 +75,38 @@ export function JobsFeed() {
 
   const progress = updatesData?.progress || 10;
 
+  const SCRAPE_STAGE_CONFIG = {
+    pending: {
+      label: "Preparing Search",
+      description: "Preparing your personalized job search.",
+    },
+
+    scraping_jobs: {
+      label: "Searching Jobs",
+      description: "Searching across multiple job platforms.",
+    },
+
+    ai_filtering: {
+      label: "AI Filtering",
+      description: "Filtering opportunities with AI relevance matching.",
+    },
+
+    saving: {
+      label: "Saving Jobs",
+      description: "Saving relevant jobs to your feed.",
+    },
+
+    completed: {
+      label: "Feed Ready",
+      description: "Your personalized feed is ready.",
+    },
+  } as const;
+
   const stageConfig = SCRAPE_STAGE_CONFIG[
     stage as keyof typeof SCRAPE_STAGE_CONFIG
   ] || {
     label: "Preparing your feed...",
-    progress: 10,
+    description: "Setting up your personalized job search.",
   };
 
   const [search, setSearch] = useState("");
@@ -103,18 +130,19 @@ export function JobsFeed() {
 
   const isScraping = scrapeStatus === "pending" || scrapeStatus === "scraping";
 
-  console.log({
-    scrapeStatus,
-    stage,
-    updatesData,
-  });
+  // console.log({
+  //     scrapeStatus,
+  //     stage,
+  //     updatesData,
 
-  console.log({
-    scrapeStatus,
-    groupedUpdates,
-    groupedLength: groupedUpdates.length,
-    updates,
-  });
+  //   });
+
+  //   console.log({
+  //     scrapeStatus,
+  //     groupedUpdates,
+  //     groupedLength: groupedUpdates.length,
+  //     updates,
+  //   });
 
   if (isRequirementsLoading) {
     return (
@@ -190,37 +218,33 @@ export function JobsFeed() {
           {/* Scraping State */}
           {isScraping && (
             <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
-              <div className="mb-5 flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-lg font-semibold tracking-tight">
-                    {stageConfig.label}
-                  </h2>
+              <div className="space-y-2">
+                <h2 className="text-lg font-semibold tracking-tight">
+                  {stageConfig.label}
+                </h2>
 
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Your personalized job feed is being prepared.
-                  </p>
-                </div>
-
-                <div className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-                  {progress}%
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  {stageConfig.description}
+                </p>
               </div>
 
-              <div className="overflow-hidden rounded-full bg-muted">
+              <div className="mt-6 flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">
+                  Processing
+                </span>
+
+                <span className="text-xs font-medium text-muted-foreground">
+                  {progress}%
+                </span>
+              </div>
+
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-2 rounded-full bg-foreground transition-all duration-700"
+                  className="h-full rounded-full bg-foreground transition-all duration-1000 ease-out"
                   style={{
-                    width: `${progress}%`,
+                    width: `${Math.max(progress, 5)}%`,
                   }}
                 />
-              </div>
-
-              <div className="mt-6 space-y-3">
-                <div className="h-4 w-2/3 animate-pulse rounded-full bg-muted" />
-
-                <div className="h-4 w-1/2 animate-pulse rounded-full bg-muted" />
-
-                <div className="h-4 w-1/3 animate-pulse rounded-full bg-muted" />
               </div>
             </div>
           )}

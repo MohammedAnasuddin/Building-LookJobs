@@ -1,50 +1,45 @@
-import { getAccessToken } from "./auth-token"
+import { getAccessToken } from "./auth-token";
 
 type RequestOptions = RequestInit & {
-  auth?: boolean
-}
+  auth?: boolean;
+};
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export async function apiClient<T>(
   endpoint: string,
-  options: RequestOptions = {}
+  options: RequestOptions = {},
 ): Promise<T> {
-  const {
-    auth = false,
-    headers,
-    ...rest
-  } = options
+  const { auth = false, headers, ...rest } = options;
 
-  let token: string | null = null
+  let token: string | null = null;
 
   if (auth) {
-    token = await getAccessToken()
+    try {
+      token = await getAccessToken();
+    } catch (error) {
+      window.location.reload();
+      throw error;
+    }
   }
 
-  const response = await fetch(
-    `${API_BASE_URL}${endpoint}`,
-    {
-      ...rest,
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...rest,
 
-      headers: {
-        "Content-Type": "application/json",
+    headers: {
+      "Content-Type": "application/json",
 
-        ...(token && {
-          Authorization: `Bearer ${token}`,
-        }),
+      ...(token && {
+        Authorization: `Bearer ${token}`,
+      }),
 
-        ...headers,
-      },
-    }
-  )
+      ...headers,
+    },
+  });
 
   if (!response.ok) {
-    throw new Error(
-      `Request failed: ${response.status}`
-    )
+    throw new Error(`Request failed: ${response.status}`);
   }
 
-  return response.json()
+  return response.json();
 }

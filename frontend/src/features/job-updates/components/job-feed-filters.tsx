@@ -12,7 +12,7 @@ type JobFeedFiltersProps = {
   onProviderChange: (provider: string | null) => void;
 };
 
-const providers = ["LinkedIn", "Wellfound", "Naukri"];
+const providers = ["LinkedIn", "Indeed", "Naukri", "Internshala"];
 
 export function JobFeedFilters({
   search,

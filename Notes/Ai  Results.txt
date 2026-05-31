@@ -1,0 +1,86 @@
+Before:
+🚀 [User] Scraping jid_3b30c582-f6e2-40f2-add0-ce9bc653f4e7
+⏭️ LinkedIn skipped
+🚀 [Indeed] Starting scraper...
+✅ [indeed] Cookies loaded
+🍪 [indeed] Cookies saved
+✅ [Indeed] Session ready
+🔍 [Indeed] Scraping: "Full satck Intern" in Hyderabad
+   → https://in.indeed.com/jobs?q=Full+satck+Intern&l=Hyderabad&fromage=1&sort=date&explvl=ENTRY_LEVEL
+   ✅ 2 jobs found
+🍪 [indeed] Cookies saved
+🔒 [Indeed] Done
+✅ Indeed done
+🚀 [Naukri] Starting scraper...
+🔍 [Naukri] Scraping: "Full satck Intern" in Hyderabad
+   → https://www.naukri.com/full-satck-intern-jobs-in-hyderabad?jobAge=1&experience=0
+   ✅ 6 jobs found
+🔒 [Naukri] Done
+✅ Naukri done
+🚀 [Internshala] Starting scraper...
+🔍 [Internshala] Scraping: "Full satck Intern" in Hyderabad
+   → https://internshala.com/jobs/full-satck-intern-jobs-in-hyderabad/?sort_by=posted_date
+   ✅ 41 jobs found
+🔒 [Internshala] Done
+✅ Internshala done
+📊 49 jobs scraped
+   [Groq] "AI Python Intern (KMIT College)" → ✅ relevant
+   [Groq] "AI Python Intern (KMIT College)" → ✅ relevant
+   [Groq] "Software Engineer I" → ✅ relevant
+   [Groq] "Corporate Development Intern" → ✅ relevant
+   [Groq] "Proposal Writer / Technical Writer" → ✅ relevant
+   [Groq] "Culinary Internship" → ❌ not relevant
+   [Groq] "Talent Acquisition Intern" → ❌ not relevant
+   [Groq] "IT Recruiter Intern" → ✅ relevant
+   [Groq] "N/A" → ❌ not relevant
+   [Groq] "Video Editor" → ✅ relevant
+   [Groq] "Business Development Manager" → ❌ not relevant
+   [Groq] "Sales Executive" → ✅ relevant
+   [Groq] "Customer Service Associate" → ❌ not relevant
+   [Groq] "CSR Manager (NGO)" → ❌ not relevant
+   [Groq] "Digital Marketing Executive" → ✅ relevant
+   [Groq] "Sales Associate" → ❌ not relevant
+   [Groq] "Operations Executive" → ❌ not relevant
+   [Groq] "Business Development Associate" → ✅ relevant
+   [Groq] "TGT English Teacher For CBSE School" → ❌ not relevant
+   [Groq] "Senior Telecaller" → ❌ not relevant
+   [Groq] "Senior Sales Executive" → ❌ not relevant
+   [Groq] "Associate Content Writer" → ❌ not relevant
+   [Groq] "Sales Manager (Hyderabad)" → ❌ not relevant
+   [Groq] "Accountant" → ❌ not relevant
+   [Groq] "Product Manager" → ❌ not relevant
+   [Groq] "Field Sales Executive" → ❌ not relevant
+   [Groq] "Sales Executive" → ❌ not relevant
+   [Groq] "Telecom Billing Coordinator" → ✅ relevant
+   [Groq] "Key Account Manager" → ❌ not relevant
+   [Groq] "Business Development Executive" → ❌ not relevant
+   [Groq] "Telecaller" → ❌ not relevant
+   [Groq] "Junior Executive Assistant" → ❌ not relevant
+   [Groq] "Content Creator" → ✅ relevant
+   [Groq] "Field Sales Associate" → ❌ not relevant
+   [Groq] "Digital Marketing Specialist" → ✅ relevant
+   [Groq] "Customer Support Associate" → ✅ relevant
+   [Groq] "Senior Video Editor" → ❌ not relevant
+   [Groq] "Business Development Executive" → ✅ relevant
+   [Groq] "Junior Operations Executive" → ✅ relevant
+   [Groq] "Customer Relationship Executive Hyderabad" → ✅ relevant
+   [Groq] "Support Analyst - Data Entry - Fresher" → ❌ not relevant
+   [Groq] "Content Writer - 52829" → ❌ not relevant
+   [Groq] "IT Analyst" → ✅ relevant
+   [Groq] "STEM Engineer/Robotics Trainer/STEM Trainer" → ✅ relevant
+   [Groq] "Business Development & Digital Marketing Executive" → ✅ relevant
+   [Groq] "Office Administrator" → ❌ not relevant
+   [Groq] "Business Development Executive" → ❌ not relevant
+   [Groq] "Dealer - Broking" → ❌ not relevant
+   [Groq] "Quality Assurance Tester" → ✅ relevant
+✅ 21 jobs after filter
+✅ Stored 21 jobs for jid_3b30c582-f6e2-40f2-add0-ce9bc653f4e7
+
+
+
+
+
+
+After
+
+
