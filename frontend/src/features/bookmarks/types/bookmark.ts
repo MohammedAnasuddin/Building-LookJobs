@@ -7,7 +7,7 @@ export type Bookmark = {
 
   requirement_title: string;
 
-  id: number;
+  job_update_id: number;
 
   job_title: string;
 

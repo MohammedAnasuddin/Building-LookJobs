@@ -5,11 +5,13 @@ import { AppLayout } from "../layouts/app-layout";
 import { HomePage } from "@/pages/home-page";
 import { ProfilePage } from "@/pages/profile-page";
 import { BookmarksPage } from "@/pages/bookmarks-page";
+import { ErrorPage } from "@/pages/error-page";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <AppLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,

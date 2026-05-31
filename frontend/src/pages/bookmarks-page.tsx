@@ -7,9 +7,11 @@ import { useBookmarks } from "@/features/bookmarks/hooks/use-bookmarks";
 import { groupBookmarksByRequirement } from "@/features/bookmarks/utils/group-bookmarks-by-requirement";
 
 import { groupBookmarksByDate } from "@/features/bookmarks/utils/group-bookmarks-by-date";
+import { useToggleBookmark } from "@/features/bookmarks/hooks/use-toggle-bookmark";
 
 export function BookmarksPage() {
   const { data, isLoading } = useBookmarks();
+  const { mutate: toggleBookmark } = useToggleBookmark();
 
   const bookmarks = data?.data ?? [];
 
@@ -17,9 +19,7 @@ export function BookmarksPage() {
     return (
       <div className="space-y-4">
         <Card className="h-24 animate-pulse" />
-
         <Card className="h-24 animate-pulse" />
-
         <Card className="h-24 animate-pulse" />
       </div>
     );
@@ -31,7 +31,7 @@ export function BookmarksPage() {
         <h2 className="text-lg font-semibold">No saved jobs yet</h2>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          Bookmark jobs to revisit them later.
+          Save jobs from your feed to revisit them later.
         </p>
       </Card>
     );
@@ -57,27 +57,33 @@ export function BookmarksPage() {
                 </p>
               </div>
 
-              {Object.entries(groupedDates).map(([dateGroup, jobs]) => (
-                <div key={dateGroup} className="space-y-3">
-                  <h3 className="text-sm font-medium text-muted-foreground">
-                    {dateGroup}
-                  </h3>
+              {Object.entries(groupedDates).map(([dateLabel, jobs]) => (
+                <div key={dateLabel} className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                      {dateLabel}
+                    </h3>
+
+                    <div className="h-px flex-1 bg-border" />
+                  </div>
 
                   {jobs.map((bookmark) => (
                     <JobCard
                       key={bookmark.bookmark_id}
                       job={{
-                        id: String(bookmark.id),
+                        id: String(bookmark.job_update_id),
 
                         title: bookmark.job_title,
 
-                        company: bookmark.company,
+                        company: bookmark.company ?? "Unknown Company",
 
                         source: bookmark.job_provider,
 
                         postedAt: new Date(
                           bookmark.bookmarked_at,
                         ).toLocaleDateString(),
+
+                        dayGroup: "today",
 
                         applyUrl: bookmark.job_url,
 
@@ -88,6 +94,13 @@ export function BookmarksPage() {
 
                         isFresher: false,
                       }}
+                      isBookmarked={true}
+                      onToggleBookmark={() =>
+                        toggleBookmark({
+                          jobId: bookmark.job_update_id,
+                          isBookmarked: true,
+                        })
+                      }
                     />
                   ))}
                 </div>

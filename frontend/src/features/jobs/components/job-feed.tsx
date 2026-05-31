@@ -126,8 +126,14 @@ export function JobsFeed() {
   const { data: bookmarksData } = useBookmarks();
 
   const bookmarkedIds = new Set(
-    (bookmarksData?.data ?? []).map((bookmark) => bookmark.id),
+    (bookmarksData?.data ?? []).map((bookmark) =>
+      Number(bookmark.job_update_id),
+    ),
   );
+
+  console.log("BOOKMARKS", bookmarksData?.data);
+
+  console.log("BOOKMARKED IDS", [...bookmarkedIds]);
 
   const { mutate: toggleBookmark } = useToggleBookmark();
 
@@ -298,7 +304,11 @@ export function JobsFeed() {
 
                   <div className="space-y-4">
                     {group.jobs.map((job) => {
-                      const isBookmarked = bookmarkedIds.has(job.id);
+                      const isBookmarked = bookmarkedIds.has(Number(job.id));
+                      console.log({
+                        jobId: job.id,
+                        isBookmarked,
+                      });
 
                       return (
                         <JobCard

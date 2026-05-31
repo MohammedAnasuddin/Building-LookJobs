@@ -3,17 +3,15 @@ import type { Bookmark } from "../types/bookmark";
 export function groupBookmarksByRequirement(bookmarks: Bookmark[]) {
   return bookmarks.reduce(
     (acc, bookmark) => {
-      const key = bookmark.job_req_id;
-
-      if (!acc[key]) {
-        acc[key] = {
+      if (!acc[bookmark.job_req_id]) {
+        acc[bookmark.job_req_id] = {
           title: bookmark.requirement_title,
 
           jobs: [],
         };
       }
 
-      acc[key].jobs.push(bookmark);
+      acc[bookmark.job_req_id].jobs.push(bookmark);
 
       return acc;
     },
@@ -22,7 +20,6 @@ export function groupBookmarksByRequirement(bookmarks: Bookmark[]) {
       string,
       {
         title: string;
-
         jobs: Bookmark[];
       }
     >,

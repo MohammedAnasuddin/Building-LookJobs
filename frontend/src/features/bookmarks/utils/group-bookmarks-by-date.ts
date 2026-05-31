@@ -7,19 +7,19 @@ export function groupBookmarksByDate(bookmarks: Bookmark[]) {
     (acc, bookmark) => {
       const date = new Date(bookmark.bookmarked_at);
 
-      let key = "Older";
+      let label = "Older";
 
       if (isToday(date)) {
-        key = "Today";
+        label = "Today";
       } else if (isYesterday(date)) {
-        key = "Yesterday";
+        label = "Yesterday";
       }
 
-      if (!acc[key]) {
-        acc[key] = [];
+      if (!acc[label]) {
+        acc[label] = [];
       }
 
-      acc[key].push(bookmark);
+      acc[label].push(bookmark);
 
       return acc;
     },

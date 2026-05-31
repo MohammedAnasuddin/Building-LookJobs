@@ -24,7 +24,17 @@ export function JobCard({
   const { mutate, isPending } = useToggleBookmark();
 
   return (
-    <Card className="border-border/70 bg-card px-4 py-4 shadow-sm">
+    <Card
+      className="
+    border-border/70
+    bg-card
+    px-4
+    py-4
+    shadow-sm
+    transition-all
+    duration-200
+  "
+    >
       <div className="flex items-start justify-between gap-4">
         {/* Left */}
         <div className="min-w-0 flex-1">
@@ -69,7 +79,7 @@ export function JobCard({
           >
             <Bookmark
               className={cn(
-                "h-4 w-4",
+                "h-4 w-4 transition-all duration-200",
                 isBookmarked && "fill-current text-primary",
               )}
             />

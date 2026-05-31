@@ -26,6 +26,10 @@ export function useToggleBookmark() {
       queryClient.invalidateQueries({
         queryKey: ["bookmarks"],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["job-updates"],
+      });
     },
   });
 }

@@ -7,6 +7,7 @@ import userRoutes from "./routes/user.routes.js";
 import jobRequirementRoutes from "./routes/jobRequirement.route.js";
 import jobUpdateRoutes from "./routes/jobUpdate.route.js";
 import demoRoutes from "./routes/demo.routes.js";
+import bookmarkRoutes from "./routes/bookmark.route.js";
 
 import "./cron/scraper.cron.js";
 
@@ -28,6 +29,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/demo", demoRoutes);
 app.use("/api/job-requirements", jobRequirementRoutes);
 app.use("/api/job-updates", jobUpdateRoutes);
+app.use("/api/bookmarks", bookmarkRoutes);
 
 // Health check
 app.get("/", (req, res) => {

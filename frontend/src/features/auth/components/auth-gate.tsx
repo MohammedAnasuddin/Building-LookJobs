@@ -38,22 +38,23 @@ export function AuthGate({ children }: AuthGateProps) {
   // User not authenticated
   if (!isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center px-6">
-        <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
-          <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-background">
-            <BriefcaseBusiness className="h-7 w-7" />
-          </div>
-
-          <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            Personalized job discovery built for focused career growth.
+      <div className="min-h-screen bg-background px-6 py-12">
+        <div className="mx-auto flex max-w-5xl flex-col items-center pt-12 md:pt-20">
+          {/* Hero */}
+          <h1 className="max-w-4xl text-center text-4xl font-bold tracking-tight sm:text-6xl">
+            Stop scrolling job boards.
+            <br />
+            Let opportunities come to you.
           </h1>
 
-          <p className="mt-6 max-w-lg text-base leading-7 text-muted-foreground sm:text-lg">
-            Track curated opportunities across platforms with continuously
-            updated, requirement-driven job feeds.
+          <p className="mt-6 max-w-2xl text-center text-lg leading-8 text-muted-foreground">
+            Create personalized job requirements and automatically discover
+            relevant opportunities from multiple platforms in one organized
+            feed.
           </p>
 
-          <div className="mt-10 flex items-center gap-4">
+          {/* CTA */}
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Button
               size="lg"
               className="rounded-full px-8"
@@ -68,28 +69,111 @@ export function AuthGate({ children }: AuthGateProps) {
               className="rounded-full px-8"
               onClick={() => loginWithRedirect()}
             >
-              Login
+              Sign In
             </Button>
           </div>
 
-          <div className="mt-16 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground">
-            <span className="rounded-full border border-border px-3 py-1">
-              Multi-platform feeds
-            </span>
+          {/* Features */}
+          <div className="mt-20 grid w-full gap-4 md:grid-cols-3">
+            <div className="rounded-3xl border border-border p-6">
+              <h3 className="font-semibold">Personalized Feeds</h3>
 
-            <span className="rounded-full border border-border px-3 py-1">
-              AI relevance filtering
-            </span>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                Define exactly what you're looking for and receive a
+                continuously updated feed tailored to your goals.
+              </p>
+            </div>
 
-            <span className="rounded-full border border-border px-3 py-1">
-              Personalized tracking
-            </span>
+            <div className="rounded-3xl border border-border p-6">
+              <h3 className="font-semibold">Multi-Platform Discovery</h3>
+
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                Aggregate opportunities from multiple sources instead of
+                checking each platform manually.
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-border p-6">
+              <h3 className="font-semibold">Save & Track</h3>
+
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                Bookmark promising roles and organize opportunities by
+                requirement.
+              </p>
+            </div>
+          </div>
+
+          {/* How It Works */}
+          <section className="mt-24 w-full">
+            <h2 className="text-center text-3xl font-semibold">How It Works</h2>
+
+            <div className="mt-10 grid gap-4 md:grid-cols-4">
+              {[
+                "Create Requirement",
+                "We Scan Sources",
+                "Receive Curated Jobs",
+                "Save Opportunities",
+              ].map((step, index) => (
+                <div
+                  key={step}
+                  className="rounded-3xl border border-border p-6 text-center"
+                >
+                  <div className="mb-4 text-2xl font-bold text-muted-foreground">
+                    {index + 1}
+                  </div>
+
+                  <p className="font-medium">{step}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Benefits */}
+          <section className="mt-24 w-full">
+            <div className="rounded-3xl border border-border p-8">
+              <h2 className="text-center text-2xl font-semibold">
+                Why LookJobs?
+              </h2>
+
+              <div className="mt-8 grid gap-6 md:grid-cols-3">
+                <div>
+                  <h3 className="font-medium">No More Endless Searching</h3>
+
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Stop checking multiple platforms every day. Let jobs come to
+                    you.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-medium">Focused Opportunities</h3>
+
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Track only the roles that match your goals and experience.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-medium">Never Lose Good Leads</h3>
+
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Save interesting opportunities and revisit them later.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <div className="mt-20 border-t border-border pt-10 text-center">
+            <p className="text-sm text-muted-foreground">
+              Built for focused job seekers who want signal instead of noise.
+            </p>
           </div>
         </div>
       </div>
     );
   }
-
   // Authenticated app
   return children;
 }

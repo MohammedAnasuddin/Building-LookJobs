@@ -23,44 +23,19 @@ export function AppLayout() {
         {/* Top Navigation */}
         <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
           <div className="mx-auto flex h-14 max-w-[820px] items-center justify-between px-4">
-            <h1 className="text-sm font-semibold tracking-tight">LookJobs</h1>
+            <NavLink to="/" className="text-sm font-semibold tracking-tight">
+              LookJobs
+            </NavLink>
 
-            <div className="hidden items-center gap-4 md:flex">
-              {/* {isAuthenticated && (
-                <button
-                  onClick={async () => {
-                    const token = await getAccessTokenSilently();
+            {isAuthenticated && (
+              <div className="hidden items-center gap-8 md:flex">
+                <NavItem to="/">Feed</NavItem>
 
-                    console.log(token);
-                  }}
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Get Token
-                </button> 
-              )} */}
+                <NavItem to="/bookmarks">Saved</NavItem>
 
-              {isAuthenticated ? (
-                <button
-                  onClick={() =>
-                    logout({
-                      logoutParams: {
-                        returnTo: window.location.origin,
-                      },
-                    })
-                  }
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Logout
-                </button>
-              ) : (
-                <button
-                  onClick={() => loginWithRedirect()}
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Login
-                </button>
-              )}
-            </div>
+                <NavItem to="/profile">Profile</NavItem>
+              </div>
+            )}
           </div>
         </header>
 
@@ -72,7 +47,7 @@ export function AppLayout() {
         {/* Bottom Navigation */}
         <nav className="fixed bottom-0 left-0 right-0 border-t border-border bg-background/95 backdrop-blur md:hidden">
           <div className="mx-auto flex h-16 max-w-md items-center justify-around">
-            <NavItem to="/">Home</NavItem>
+            <NavItem to="/">Feed</NavItem>
             <NavItem to="/bookmarks">Saved</NavItem>
             <NavItem to="/profile">Profile</NavItem>
           </div>
