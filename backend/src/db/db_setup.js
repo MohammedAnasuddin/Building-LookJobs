@@ -2,6 +2,7 @@ import pkg from "pg";
 import dotenv from "dotenv";
 
 dotenv.config();
+
 const { Pool } = pkg;
 
 const pool = new Pool({
@@ -12,16 +13,20 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-const check = await pool.query(`
-  SELECT table_schema, table_name
-  FROM information_schema.tables
-  WHERE table_name = 'job_update_details'
-`);
-console.log("✅ Node sees tables:", check.rows);
+// =========================
+// STARTUP DB VALIDATION
+// =========================
 
-pool
-  .connect()
-  .then(() => console.log("✅ PostgreSQL Connected Successfully"))
-  .catch((err) => console.error("❌ Database Connection Failed:", err.stack));
+try {
+  await pool.query("SELECT 1");
+
+  console.log("✅ PostgreSQL connected successfully");
+} catch (err) {
+  console.error("❌ PostgreSQL connection failed");
+
+  console.error(err);
+
+  process.exit(1);
+}
 
 export default pool;

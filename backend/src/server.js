@@ -12,7 +12,10 @@ import bookmarkRoutes from "./routes/bookmark.route.js";
 import "./cron/scraper.cron.js";
 import { healthController } from "./controllers/health.controller.js";
 
+import { validateEnv } from "./config/validateEnv.js";
 dotenv.config();
+
+validateEnv();
 
 const app = express();
 
