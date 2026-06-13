@@ -4,6 +4,8 @@ import {
   deleteJobRequirementService,
 } from "../services/jobRequirement.service.js";
 
+import { MAX_REQUIREMENTS } from "../constants/requirementsLimit.js";
+
 export const getUserJobRequirements = async (req, res) => {
   try {
     const userId = req.user.sub;

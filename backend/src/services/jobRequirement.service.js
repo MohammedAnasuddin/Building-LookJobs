@@ -8,11 +8,11 @@ import { runScrapeForJob } from "../scrapers/userScraper.js";
 
 import { v4 as uuidv4 } from "uuid";
 
+import { MAX_REQUIREMENTS } from "../constants/requirementsLimit.js";
+
 // =========================
 // CONFIG
 // =========================
-
-const MAX_REQUIREMENTS = 5;
 
 // =========================
 // GET USER REQUIREMENTS
