@@ -41,7 +41,7 @@ export const createJobRequirementService = async ({
   const requirements = await getJobRequirementsByUserId(userId);
 
   if (requirements.length >= MAX_REQUIREMENTS) {
-    throw new Error(`Maximum ${MAX_REQUIREMENTS} job requirements allowed`);
+    throw new Error("REQUIREMENT_LIMIT_REACHED");
   }
 
   // =========================

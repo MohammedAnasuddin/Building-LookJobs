@@ -1,19 +1,19 @@
-let accessTokenGetter:
-  | (() => Promise<string>)
-  | null = null
+let accessTokenGetter: (() => Promise<string>) | null = null;
 
-export function setAccessTokenGetter(
-  getter: () => Promise<string>
-) {
-  accessTokenGetter = getter
+export function setAccessTokenGetter(getter: () => Promise<string>) {
+  accessTokenGetter = getter;
 }
 
 export async function getAccessToken() {
   if (!accessTokenGetter) {
-    throw new Error(
-      "Access token getter not initialized"
-    )
+    return null;
   }
 
-  return accessTokenGetter()
+  try {
+    return await accessTokenGetter();
+  } catch (error) {
+    console.error("Failed to get access token", error);
+
+    return null;
+  }
 }

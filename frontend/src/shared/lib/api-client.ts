@@ -15,12 +15,7 @@ export async function apiClient<T>(
   let token: string | null = null;
 
   if (auth) {
-    try {
-      token = await getAccessToken();
-    } catch (error) {
-      window.location.reload();
-      throw error;
-    }
+    token = await getAccessToken();
   }
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -38,7 +33,19 @@ export async function apiClient<T>(
   });
 
   if (!response.ok) {
-    throw new Error(`Request failed: ${response.status}`);
+    let message = `Request failed: ${response.status}`;
+
+    try {
+      const error = await response.json();
+
+      if (error?.message) {
+        message = error.message;
+      }
+    } catch {
+      // Response wasn't JSON, keeping the default message
+    }
+
+    throw new Error(message);
   }
 
   return response.json();
